@@ -18,7 +18,10 @@
 // 02110-1301, USA
 //
 
-#include "main.h"
+#include <hana/card.hpp>
+#include <cassert>
+#include <cstring>
+#include <iostream>
 
 unsigned char CCard::m_ucCardFlags[6];
 
@@ -91,7 +94,7 @@ int CCard::GetType() const
 
 void CCard::NewRound()
 {
-   memset(m_ucCardFlags, 0, sizeof(m_ucCardFlags));
+   ::memset(m_ucCardFlags, 0, sizeof(m_ucCardFlags));
 }
 
 CCard CCard::GetRandomCard()
@@ -107,10 +110,11 @@ CCard CCard::GetRandomCard()
 
    count--;
    if (count < 0) {
-      TerminateOnError("CCard::GetRandomCard(): No cards left!");
+     std::cerr << "CCard::GetRandomCard(): No cards left!";
+     exit(1);
    }
 
-   i = RandomLong(0, count);
+   i = rand() % count;
    m_ucCardFlags[a[i] / 8] |= (1 << (a[i] & 7));
 
    return CCard(a[i]);

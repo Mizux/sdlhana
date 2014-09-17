@@ -22,7 +22,7 @@
 
 // Portions of this file are based on SGU Library by Stephane Magnenat
 
-#include "main.h"
+#include "main.hpp"
 
 void trim(char *str)
 {

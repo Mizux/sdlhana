@@ -18,7 +18,15 @@
 // 02110-1301, USA
 //
 
-#include "main.h"
+#include "main.hpp"
+#include "ini.hpp"
+#include "font.hpp"
+#include "general.hpp"
+
+#include <hana/card.hpp>
+#include "player.hpp"
+#include "game.hpp"
+#include "bot.hpp"
 
 SDL_Surface *gpScreen = NULL;
 bool g_fNoSound = false;

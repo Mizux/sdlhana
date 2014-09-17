@@ -18,10 +18,10 @@
 // 02110-1301, USA
 //
 
-#ifndef BOT_H
-#define BOT_H
+#ifndef BOT_HPP
+#define BOT_HPP
 
-#include "player.h"
+#include "player.hpp"
 
 #define MAX_MOVES 160
 
@@ -65,7 +65,7 @@ public:
 
 private:
    void      AnalyzeMoves();
-   void      AnalyzeHand(int *hand = NULL, int *opnhand = NULL);
+   void      AnalyzeHand(int *hand = nullptr, int *opnhand = nullptr);
    int       AnalyzeGoal();
    int       DiscardCard();
 

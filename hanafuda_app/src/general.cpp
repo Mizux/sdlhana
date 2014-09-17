@@ -18,9 +18,12 @@
 // 02110-1301, USA
 //
 
-#include "main.h"
+#include "general.hpp"
 
-CGeneral *gpGeneral = NULL;
+#include <SDL.h>
+#include "main.hpp"
+
+CGeneral *gpGeneral = nullptr;
 
 const char *soundfile[NUM_SOUND + 1] = {
    "card1",
@@ -59,26 +62,26 @@ void CGeneral::ScreenFade(int duration, SDL_Surface *s)
 
    if (!pNewFadeSurface) {
       // cannot create surface, just blit the surface to the screen
-      if (s != NULL) {
-         SDL_BlitSurface(s, NULL, gpScreen, NULL);
+      if (s != nullptr) {
+         SDL_BlitSurface(s, nullptr, gpScreen, nullptr);
          SDL_UpdateRect(gpScreen, 0, 0, gpScreen->w, gpScreen->h);
       }
       return;
    }
 
-   if (s == NULL) {
+   if (s == nullptr) {
       // make black screen
-      SDL_FillRect(pNewFadeSurface, NULL,
+      SDL_FillRect(pNewFadeSurface, nullptr,
          SDL_MapRGB(pNewFadeSurface->format, 0, 0, 0));
    } else {
-      SDL_BlitSurface(s, NULL, pNewFadeSurface, NULL);
+      SDL_BlitSurface(s, nullptr, pNewFadeSurface, nullptr);
    }
 
    if (SDL_MUSTLOCK(gpScreen)) {
       if (SDL_LockSurface(gpScreen) < 0) {
          // cannot lock screen, just blit the surface to the screen
-         if (s != NULL) {
-            SDL_BlitSurface(s, NULL, gpScreen, NULL);
+         if (s != nullptr) {
+            SDL_BlitSurface(s, nullptr, gpScreen, nullptr);
             SDL_UpdateRect(gpScreen, 0, 0, gpScreen->w, gpScreen->h);
          }
          return;
@@ -88,7 +91,7 @@ void CGeneral::ScreenFade(int duration, SDL_Surface *s)
    const unsigned int size = gpScreen->pitch * gpScreen->h;
    unsigned char *fadeFromRGB = (unsigned char *)calloc(size, 1);
    unsigned char *fadeToRGB = (unsigned char *)calloc(size, 1);
-   if (fadeFromRGB == NULL || fadeToRGB == NULL) {
+   if (fadeFromRGB == nullptr || fadeToRGB == nullptr) {
       TerminateOnError("Memory allocation error !");
    }
 
@@ -119,7 +122,7 @@ void CGeneral::ScreenFade(int duration, SDL_Surface *s)
    free(fadeFromRGB);
    free(fadeToRGB);
 
-   SDL_BlitSurface(pNewFadeSurface, NULL, gpScreen, NULL);
+   SDL_BlitSurface(pNewFadeSurface, nullptr, gpScreen, nullptr);
    SDL_UpdateRect(gpScreen, 0, 0, gpScreen->w, gpScreen->h);
 
    if (SDL_MUSTLOCK(gpScreen))
@@ -179,7 +182,7 @@ void CGeneral::ClearScreen(bool fadein, bool fadeout, bool bg)
             dstrect.y = r->h - h;
             dstrect.w = m_imgBack->w;
             dstrect.h = m_imgBack->h;
-            SDL_BlitSurface(m_imgBack, NULL, r, &dstrect);
+            SDL_BlitSurface(m_imgBack, nullptr, r, &dstrect);
             h -= m_imgBack->h;
          }
          w -= m_imgBack->w;
@@ -209,7 +212,7 @@ void CGeneral::DrawTextBrush(const char *t, int x, int y, int r, int g, int b, i
    dstrect.w = s->w;
    dstrect.h = s->h;
 
-   SDL_BlitSurface(s, NULL, gpScreen, &dstrect);
+   SDL_BlitSurface(s, nullptr, gpScreen, &dstrect);
    SDL_FreeSurface(s);
 
    UpdateScreen(x, y, dstrect.w, dstrect.h);
@@ -225,7 +228,7 @@ void CGeneral::DrawText(const char *t, int x, int y, int r, int g, int b, int si
    dstrect.w = s->w;
    dstrect.h = s->h;
 
-   SDL_BlitSurface(s, NULL, gpScreen, &dstrect);
+   SDL_BlitSurface(s, nullptr, gpScreen, &dstrect);
    SDL_FreeSurface(s);
 
    UpdateScreen(x, y, dstrect.w, dstrect.h);
@@ -296,7 +299,7 @@ void CGeneral::DrawCard(const CCard &c, int x, int y, int w, int h, bool update)
    dstrect.w = w;
    dstrect.h = h;
 
-   SDL_BlitSurface(p, NULL, gpScreen, &dstrect);
+   SDL_BlitSurface(p, nullptr, gpScreen, &dstrect);
    SDL_FreeSurface(p);
 
    if (update) {
@@ -352,7 +355,7 @@ void CGeneral::FreeSound()
    int i;
 
    for (i = 0; i < NUM_SOUND; i++) {
-      if (m_snd[i] != NULL) {
+      if (m_snd[i] != nullptr) {
          SOUND_FreeWAV(m_snd[i]);
       }
    }
@@ -371,7 +374,7 @@ SDL_Surface *CGeneral::LoadBitmapFile(const char *filename)
 {
    SDL_Surface *pic = SDL_LoadBMP(filename);
 
-   if (pic == NULL) {
+   if (pic == nullptr) {
       TerminateOnError("Cannot load Bitmap file %s: %s", filename, SDL_GetError());
    }
 
@@ -381,12 +384,12 @@ SDL_Surface *CGeneral::LoadBitmapFile(const char *filename)
 SDL_AudioCVT *CGeneral::LoadSoundFile(const char *filename)
 {
    if (g_fNoSound) {
-      return NULL;
+      return nullptr;
    }
 
    SDL_AudioCVT *s = SOUND_LoadWAV(filename);
 
-   if (s == NULL) {
+   if (s == nullptr) {
       TerminateOnError("Cannot load sound file %s: %s",
          filename, SDL_GetError());
    }
@@ -474,7 +477,7 @@ CBox::CBox(int x, int y, int w, int h, int r, int g, int b, int a, bool keep)
    m_fFakeBox = false;
 
    if (keep) {
-      m_pSavedArea = NULL;
+      m_pSavedArea = nullptr;
    } else {
       m_pSavedArea = SDL_CreateRGBSurface(gpScreen->flags,
          w, h, gpScreen->format->BitsPerPixel,
@@ -486,7 +489,7 @@ CBox::CBox(int x, int y, int w, int h, int r, int g, int b, int a, bool keep)
       m_SavedRect.w = w;
       m_SavedRect.h = h;
 
-      SDL_BlitSurface(gpScreen, &m_SavedRect, m_pSavedArea, NULL);
+      SDL_BlitSurface(gpScreen, &m_SavedRect, m_pSavedArea, nullptr);
    }
 
    UTIL_FillRectAlpha(gpScreen, x, y, w, h, r, g, b, a);
@@ -498,11 +501,11 @@ CBox::CBox(int x, int y, int w, int h, int r, int g, int b, int a, bool keep)
 
 CBox::~CBox()
 {
-   if (m_fFakeBox || m_pSavedArea == NULL) {
+   if (m_fFakeBox || m_pSavedArea == nullptr) {
       return;
    }
 
-   SDL_BlitSurface(m_pSavedArea, NULL, gpScreen, &m_SavedRect);
+   SDL_BlitSurface(m_pSavedArea, nullptr, gpScreen, &m_SavedRect);
    SDL_FreeSurface(m_pSavedArea);
    gpGeneral->UpdateScreen(m_SavedRect.x, m_SavedRect.y, m_SavedRect.w, m_SavedRect.h);
 }

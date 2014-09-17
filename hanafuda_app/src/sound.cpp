@@ -25,7 +25,7 @@
 #include "SDL.h"
 
 static unsigned int audio_len = 0;
-static unsigned char *audio_pos = NULL;
+static unsigned char *audio_pos = nullptr;
 static SDL_AudioSpec audio_spec;
 bool g_fAudioOpened = false;
 
@@ -56,10 +56,10 @@ int SOUND_OpenAudio(int freq, int format, int channels, int samples)
    audio_spec.channels = channels; // 1 = mono, 2 = stereo
    audio_spec.samples = samples;
    audio_spec.callback = SOUND_FillAudio;
-   audio_spec.userdata = NULL;
+   audio_spec.userdata = nullptr;
 
    // Open the audio device, forcing the desired format
-   if (SDL_OpenAudio(&audio_spec, NULL) < 0) {
+   if (SDL_OpenAudio(&audio_spec, nullptr) < 0) {
       fprintf(stderr, "WARNING: Couldn't open audio: %s\n", SDL_GetError());
       return -1;
    } else {
@@ -76,18 +76,18 @@ SDL_AudioCVT *SOUND_LoadWAV(const char *filename)
    unsigned int len;
 
    if (!g_fAudioOpened) {
-      return NULL;
+      return nullptr;
    }
 
    wavecvt = (SDL_AudioCVT *)malloc(sizeof(SDL_AudioCVT));
-   if (wavecvt == NULL) {
-      return NULL;
+   if (wavecvt == nullptr) {
+      return nullptr;
    }
 
    loaded = SDL_LoadWAV_RW(SDL_RWFromFile(filename, "rb"), 1, &wavespec, &buf, &len);
-   if (loaded == NULL) {
+   if (loaded == nullptr) {
       free(wavecvt);
-      return NULL;
+      return nullptr;
    }
 
    // Build the audio converter and create conversion buffers
@@ -95,15 +95,15 @@ SDL_AudioCVT *SOUND_LoadWAV(const char *filename)
       audio_spec.format, audio_spec.channels, audio_spec.freq) < 0) {
       SDL_FreeWAV(buf);
       free(wavecvt);
-      return NULL;
+      return nullptr;
    }
    int samplesize = ((wavespec.format & 0xFF) / 8) * wavespec.channels;
    wavecvt->len = len & ~(samplesize - 1);
    wavecvt->buf = (unsigned char *)malloc(wavecvt->len * wavecvt->len_mult);
-   if (wavecvt->buf == NULL) {
+   if (wavecvt->buf == nullptr) {
       SDL_FreeWAV(buf);
       free(wavecvt);
-      return NULL;
+      return nullptr;
    }
    memcpy(wavecvt->buf, buf, len);
    SDL_FreeWAV(buf);
@@ -112,7 +112,7 @@ SDL_AudioCVT *SOUND_LoadWAV(const char *filename)
    if (SDL_ConvertAudio(wavecvt) < 0) {
       free(wavecvt->buf);
       free(wavecvt);
-      return NULL;
+      return nullptr;
    }
 
    return wavecvt;
@@ -120,7 +120,7 @@ SDL_AudioCVT *SOUND_LoadWAV(const char *filename)
 
 void SOUND_FreeWAV(SDL_AudioCVT *audio)
 {
-   if (audio == NULL) {
+   if (audio == nullptr) {
       return;
    }
    SDL_FreeWAV(audio->buf);
@@ -129,8 +129,8 @@ void SOUND_FreeWAV(SDL_AudioCVT *audio)
 
 void SOUND_PlayWAV(SDL_AudioCVT *audio)
 {
-   if (audio == NULL) {
-      audio_pos = NULL;
+   if (audio == nullptr) {
+      audio_pos = nullptr;
       audio_len = -1;
    } else {
       audio_pos = audio->buf;

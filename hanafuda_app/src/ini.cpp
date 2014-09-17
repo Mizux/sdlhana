@@ -18,7 +18,7 @@
 // 02110-1301, USA
 //
 
-#include "ini.h"
+#include "ini.hpp"
 
 void CIniFile::trim(char *str)
 {

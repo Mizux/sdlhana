@@ -18,9 +18,14 @@
 // 02110-1301, USA
 //
 
-#include "main.h"
+#include "game.hpp"
+#include <cstdlib>
+#include <SDL.h>
+#include "bot.hpp"
+#include "main.hpp"
+#include "general.hpp"
 
-CGame *gpGame = NULL;
+CGame *gpGame = nullptr;
 
 CGame::CGame()
 {
@@ -31,7 +36,7 @@ CGame::CGame()
 
    m_iScore = atoi(cfg.Get("GAME", "Score", "0"));
    m_flAnimDuration = atof(cfg.Get("OPTIONS", "AnimSpeed", "180"));
-   m_pPlayers[0] = m_pPlayers[1] = NULL;
+   m_pPlayers[0] = m_pPlayers[1] = nullptr;
 
    // don't allow more than 99999 points or less than -99999 points
    if (abs(m_iScore) > 99999) {
@@ -41,14 +46,14 @@ CGame::CGame()
 
 CGame::~CGame()
 {
-   if (m_pPlayers[0] != NULL) {
+   if (m_pPlayers[0] != nullptr) {
       delete m_pPlayers[0];
    }
-   m_pPlayers[0] = NULL;
-   if (m_pPlayers[1] != NULL) {
+   m_pPlayers[0] = nullptr;
+   if (m_pPlayers[1] != nullptr) {
       delete m_pPlayers[1];
    }
-   m_pPlayers[1] = NULL;
+   m_pPlayers[1] = nullptr;
 }
 
 void CGame::MainMenu()
@@ -186,8 +191,8 @@ void CGame::Settings()
 
             case 4:
                cfg.Set("OPTIONS", "Language", curlng);
-               curlng = strtok(NULL, ",");
-               if (curlng == NULL) {
+               curlng = strtok(nullptr, ",");
+               if (curlng == nullptr) {
                   strcpy(lngs, cfg.Get("OPTIONS", "AllLanguage", "eng"));
                   curlng = strtok(lngs, ",");
                }
@@ -241,7 +246,7 @@ void CGame::RunGame()
 {
    m_pPlayers[0] = new CPlayer;
    m_pPlayers[1] = new CBot;
-   if (m_pPlayers[0] == NULL || m_pPlayers[1] == NULL) {
+   if (m_pPlayers[0] == nullptr || m_pPlayers[1] == nullptr) {
       TerminateOnError("Memory allocation error!");
    }
 
@@ -357,7 +362,7 @@ void CGame::PlayRound()
    AnimDeal();
 
    // playing the game
-   CBasePlayer *current = CBasePlayer::GetDealer(), *winner = NULL;
+   CBasePlayer *current = CBasePlayer::GetDealer(), *winner = nullptr;
 
    while (1) {
       if (current->GetNumHandCard() <= 0) {
@@ -370,7 +375,7 @@ void CGame::PlayRound()
                winner = current;
             }
          } else {
-            winner = NULL;
+            winner = nullptr;
          }
          break;
       }
@@ -428,7 +433,7 @@ void CGame::PlayRound()
       current = current->GetOpponent();
    }
 
-   if (winner != NULL) {
+   if (winner != nullptr) {
       if (GetGameMode() == GAMEMODE_KOREAN) {
          winner->CalcAddResult();
       }
@@ -462,7 +467,7 @@ void CGame::CardDiscarded(const CCard &c, CBasePlayer *current, int sx, int sy)
    // draw one card from the desk
    CCard drawn = CCard::GetRandomCard();
 
-   SDL_Surface *save1 = NULL, *save2 = NULL;
+   SDL_Surface *save1 = nullptr, *save2 = nullptr;
    int x1, y1, x2, y2, getfour_month = -1;
    bool leavethree = false;
 
@@ -505,7 +510,7 @@ void CGame::CardDiscarded(const CCard &c, CBasePlayer *current, int sx, int sy)
       x1 = 140 + 48 * (slot / 2) + 10;
       y1 = 100 + 78 * (slot & 1) + 10;
 
-      save1 = AnimCardMove(sx, sy, x1, y1, 48, 78, NULL, true);
+      save1 = AnimCardMove(sx, sy, x1, y1, 48, 78, nullptr, true);
       gpGeneral->PlaySound(SOUND_PICKCARD);
       UTIL_Delay(200);
 
@@ -513,7 +518,7 @@ void CGame::CardDiscarded(const CCard &c, CBasePlayer *current, int sx, int sy)
          current->GetNumHandCard() > 1)
       {
          SDL_FreeSurface(save1);
-         save1 = NULL;
+         save1 = nullptr;
          int slot1 = FindFreeDeskCardSlot();
          m_DeskCards[slot1] = c;
          if (slot1 >= m_iNumDeskCard) {
@@ -531,7 +536,7 @@ void CGame::CardDiscarded(const CCard &c, CBasePlayer *current, int sx, int sy)
       x1 = 140 + 48 * (index[0] / 2) + 10;
       y1 = 100 + 78 * (index[0] & 1) + 10;
 
-      save1 = AnimCardMove(sx, sy, x1, y1, 48, 78, NULL, true);
+      save1 = AnimCardMove(sx, sy, x1, y1, 48, 78, nullptr, true);
       gpGeneral->PlaySound(SOUND_PICKCARD);
       UTIL_Delay(200);
 
@@ -556,7 +561,7 @@ void CGame::CardDiscarded(const CCard &c, CBasePlayer *current, int sx, int sy)
       m_DeskCards[index[1]].Destroy();
       m_DeskCards[index[2]].Destroy();
 
-      save1 = NULL;
+      save1 = nullptr;
       slot = 999;
 
       if (current->GetNumHandCard() > 1 && current->GetOpponent()->GetNumHandCard() > 0) {
@@ -579,7 +584,7 @@ void CGame::CardDiscarded(const CCard &c, CBasePlayer *current, int sx, int sy)
       x1 = 140 + 48 * (slot / 2) + 10;
       y1 = 100 + 78 * (slot & 1) + 10;
 
-      save1 = AnimCardMove(sx, sy, x1, y1, 48, 78, NULL, true);
+      save1 = AnimCardMove(sx, sy, x1, y1, 48, 78, nullptr, true);
       gpGeneral->PlaySound(SOUND_PICKCARD);
       UTIL_Delay(200);
 
@@ -604,7 +609,7 @@ void CGame::CardDiscarded(const CCard &c, CBasePlayer *current, int sx, int sy)
    dstrect.w = 48;
    dstrect.h = 78;
 
-   SDL_BlitSurface(gpScreen, &dstrect, save2, NULL);
+   SDL_BlitSurface(gpScreen, &dstrect, save2, nullptr);
 
    UTIL_Delay(200);
    gpGeneral->DrawCard(drawn, 60, 105, 48, 78, true);
@@ -637,7 +642,7 @@ void CGame::CardDiscarded(const CCard &c, CBasePlayer *current, int sx, int sy)
       }
 
       if (slot == oldslot + 1 && !(oldslot & 1)) {
-         assert(save1 != NULL);
+         assert(save1 != nullptr);
          SDL_Rect dstrect2;
 
          dstrect.x = 10;
@@ -701,7 +706,7 @@ void CGame::CardDiscarded(const CCard &c, CBasePlayer *current, int sx, int sy)
 
       SDL_FreeSurface(save2);
       SDL_FreeSurface(card2);
-      save2 = NULL;
+      save2 = nullptr;
 
       UTIL_Delay(200);
 
@@ -749,7 +754,7 @@ void CGame::CardDiscarded(const CCard &c, CBasePlayer *current, int sx, int sy)
       gpGeneral->PlaySound(SOUND_PICKCARD);
       UTIL_Delay(200);
 
-      if (save1 != NULL && save2 != NULL && (x1 < x2 || y1 < y2)) {
+      if (save1 != nullptr && save2 != nullptr && (x1 < x2 || y1 < y2)) {
          SDL_Surface *savet = save1;
          save1 = save2;
          save2 = savet;
@@ -767,16 +772,16 @@ void CGame::CardDiscarded(const CCard &c, CBasePlayer *current, int sx, int sy)
       gpGeneral->PlaySound(SOUND_MOVECARD);
       AnimCardMove(x2 - 10, y2 - 10, 575, current->IsBot() ? 10 : 400);
       UTIL_Delay(50);
-      save2 = NULL;
+      save2 = nullptr;
 
-      if (save1 != NULL) {
+      if (save1 != nullptr) {
          gpGeneral->PlaySound(SOUND_MOVECARD);
          AnimCardMove(x1, y1, 575, current->IsBot() ? 10 : 400, 48, 78, save1);
          UTIL_Delay(50);
          gpGeneral->PlaySound(SOUND_MOVECARD);
          AnimCardMove(x1 - 10, y1 - 10, 575, current->IsBot() ? 10 : 400);
          UTIL_Delay(50);
-         save1 = NULL;
+         save1 = nullptr;
       }
 
       for (int k = 1; k < 3; k++) {
@@ -827,7 +832,7 @@ void CGame::CardDiscarded(const CCard &c, CBasePlayer *current, int sx, int sy)
 
    UTIL_Delay(200);
 
-   if (save1 != NULL && save2 != NULL && (x1 < x2 || y1 < y2)) {
+   if (save1 != nullptr && save2 != nullptr && (x1 < x2 || y1 < y2)) {
       SDL_Surface *savet = save1;
       save1 = save2;
       save2 = savet;
@@ -839,7 +844,7 @@ void CGame::CardDiscarded(const CCard &c, CBasePlayer *current, int sx, int sy)
       y2 = i;
    }
 
-   if (save2 != NULL) {
+   if (save2 != nullptr) {
       gpGeneral->PlaySound(SOUND_MOVECARD);
       AnimCardMove(x2, y2, 575, current->IsBot() ? 10 : 400, 48, 78, save2);
       UTIL_Delay(50);
@@ -848,7 +853,7 @@ void CGame::CardDiscarded(const CCard &c, CBasePlayer *current, int sx, int sy)
       UTIL_Delay(50);
    }
 
-   if (save1 != NULL) {
+   if (save1 != nullptr) {
       gpGeneral->PlaySound(SOUND_MOVECARD);
       AnimCardMove(x1, y1, 575, current->IsBot() ? 10 : 400, 48, 78, save1);
       UTIL_Delay(50);
@@ -915,7 +920,7 @@ void CGame::GetOneCardFromOpponent(CBasePlayer *current)
    dstrect.w = 48;
    dstrect.h = 78;
 
-   SDL_BlitSurface(gpScreen, &dstrect, save, NULL);
+   SDL_BlitSurface(gpScreen, &dstrect, save, nullptr);
 
    gpGeneral->DrawCard(g, 575, sy, 48, 78, true);
    AnimCardMove(575, sy, 575, dy, 48, 78, save);
@@ -929,7 +934,7 @@ int CGame::SelectCardOnDesk(int month)
    int count = 0, index[2], i;
 
    for (i = 0; i < 2; i++) {
-      b[i] = NULL;
+      b[i] = nullptr;
       index[i] = -1;
    }
 
@@ -944,7 +949,7 @@ int CGame::SelectCardOnDesk(int month)
    dstrect.w = 480;
    dstrect.h = 166;
 
-   SDL_BlitSurface(gpScreen, &dstrect, save, NULL);
+   SDL_BlitSurface(gpScreen, &dstrect, save, nullptr);
 
    for (i = 0; i < m_iNumDeskCard; i++) {
       if (m_DeskCards[i].GetMonth() == month) {
@@ -972,12 +977,12 @@ int CGame::SelectCardOnDesk(int month)
    }
 
    for (i = 0; i < 2; i++) {
-      if (b[i] != NULL) {
+      if (b[i] != nullptr) {
          delete b[i];
       }
    }
 
-   SDL_BlitSurface(save, NULL, gpScreen, &dstrect);
+   SDL_BlitSurface(save, nullptr, gpScreen, &dstrect);
    gpGeneral->UpdateScreen(dstrect.x, dstrect.y, dstrect.w, dstrect.h);
    SDL_FreeSurface(save);
 
@@ -1053,7 +1058,7 @@ void CGame::AnimDeal()
             }
 
             SDL_Rect prev_dstrect3 = dstrect;
-            SDL_BlitSurface(gpScreen, &prev_dstrect3, save, NULL);
+            SDL_BlitSurface(gpScreen, &prev_dstrect3, save, nullptr);
             do {
                SDL_Rect dstrect3;
 
@@ -1061,10 +1066,10 @@ void CGame::AnimDeal()
                dstrect3.x = (int)(dstrect.x + (dstrect2.x - dstrect.x) * ratio);
                dstrect3.y = (int)(dstrect.y + (dstrect2.y - dstrect.y) * ratio);
 
-               SDL_BlitSurface(save, NULL, gpScreen, &prev_dstrect3);
-               SDL_BlitSurface(gpScreen, &dstrect3, save, NULL);
+               SDL_BlitSurface(save, nullptr, gpScreen, &prev_dstrect3);
+               SDL_BlitSurface(gpScreen, &dstrect3, save, nullptr);
 
-               SDL_BlitSurface(card, NULL, gpScreen, &dstrect3);
+               SDL_BlitSurface(card, nullptr, gpScreen, &dstrect3);
                gpGeneral->UpdateScreen(prev_dstrect3.x, prev_dstrect3.y,
                   prev_dstrect3.w, prev_dstrect3.h);
                gpGeneral->UpdateScreen(dstrect3.x, dstrect3.y,
@@ -1074,8 +1079,8 @@ void CGame::AnimDeal()
                prev_dstrect3 = dstrect3;
             } while (now < first + m_flAnimDuration);
 
-            SDL_BlitSurface(save, NULL, gpScreen, &prev_dstrect3);
-            SDL_BlitSurface(card, NULL, gpScreen, &dstrect2);
+            SDL_BlitSurface(save, nullptr, gpScreen, &prev_dstrect3);
+            SDL_BlitSurface(card, nullptr, gpScreen, &dstrect2);
             gpGeneral->UpdateScreen(prev_dstrect3.x, prev_dstrect3.y,
                prev_dstrect3.w, prev_dstrect3.h);
             gpGeneral->UpdateScreen(dstrect2.x, dstrect2.y,
@@ -1107,7 +1112,7 @@ SDL_Surface *CGame::AnimCardMove(int sx, int sy, int dx, int dy,
       gpScreen->format->Gmask, gpScreen->format->Bmask,
       gpScreen->format->Amask);
 
-   if (save == NULL) {
+   if (save == nullptr) {
       save = SDL_CreateRGBSurface(gpScreen->flags & (~SDL_HWSURFACE),
          w, h, gpScreen->format->BitsPerPixel, gpScreen->format->Rmask,
          gpScreen->format->Gmask, gpScreen->format->Bmask,
@@ -1120,7 +1125,7 @@ SDL_Surface *CGame::AnimCardMove(int sx, int sy, int dx, int dy,
    dstrect.w = dstrect2.w = w;
    dstrect.h = dstrect2.h = h;
 
-   SDL_BlitSurface(gpScreen, &dstrect, card, NULL);
+   SDL_BlitSurface(gpScreen, &dstrect, card, nullptr);
 
    dstrect2.x = dx;
    dstrect2.y = dy;
@@ -1133,10 +1138,10 @@ SDL_Surface *CGame::AnimCardMove(int sx, int sy, int dx, int dy,
       dstrect3.x = (int)(dstrect.x + (dstrect2.x - dstrect.x) * ratio);
       dstrect3.y = (int)(dstrect.y + (dstrect2.y - dstrect.y) * ratio);
 
-      SDL_BlitSurface(save, NULL, gpScreen, &prev_dstrect3);
-      SDL_BlitSurface(gpScreen, &dstrect3, save, NULL);
+      SDL_BlitSurface(save, nullptr, gpScreen, &prev_dstrect3);
+      SDL_BlitSurface(gpScreen, &dstrect3, save, nullptr);
 
-      SDL_BlitSurface(card, NULL, gpScreen, &dstrect3);
+      SDL_BlitSurface(card, nullptr, gpScreen, &dstrect3);
       gpGeneral->UpdateScreen(prev_dstrect3.x, prev_dstrect3.y,
          prev_dstrect3.w, prev_dstrect3.h);
       gpGeneral->UpdateScreen(dstrect3.x, dstrect3.y,
@@ -1146,16 +1151,16 @@ SDL_Surface *CGame::AnimCardMove(int sx, int sy, int dx, int dy,
       prev_dstrect3 = dstrect3;
    } while (now < first + m_flAnimDuration);
 
-   SDL_BlitSurface(save, NULL, gpScreen, &prev_dstrect3);
+   SDL_BlitSurface(save, nullptr, gpScreen, &prev_dstrect3);
 
    if (retsave) {
-      SDL_BlitSurface(gpScreen, &dstrect2, save, NULL);
+      SDL_BlitSurface(gpScreen, &dstrect2, save, nullptr);
    } else {
       SDL_FreeSurface(save);
-      save = NULL;
+      save = nullptr;
    }
 
-   SDL_BlitSurface(card, NULL, gpScreen, &dstrect2);
+   SDL_BlitSurface(card, nullptr, gpScreen, &dstrect2);
    gpGeneral->UpdateScreen(prev_dstrect3.x, prev_dstrect3.y,
       prev_dstrect3.w, prev_dstrect3.h);
    gpGeneral->UpdateScreen(dstrect2.x, dstrect2.y,
@@ -1285,7 +1290,7 @@ bool CGame::DoubleUp(CBasePlayer *player)
    dstrect.w = 48;
    dstrect.h = 78;
 
-   SDL_BlitSurface(gpScreen, &dstrect, save, NULL);
+   SDL_BlitSurface(gpScreen, &dstrect, save, nullptr);
 
    gpGeneral->DrawCard(c, 60, 105, 48, 78);
    gpGeneral->PlaySound(SOUND_DRAWCARD);

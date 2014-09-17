@@ -21,6 +21,10 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <SDL.h>
+#include "player.hpp"
+#include <hana/card.hpp>
+
 enum
 {
    GAMEMODE_KOIKOI = 0,

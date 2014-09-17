@@ -18,9 +18,13 @@
 // 02110-1301, USA
 //
 
-#include "main.h"
+#include "player.hpp"
 
-CBasePlayer *CBasePlayer::m_pDealer = NULL;
+#include "main.hpp"
+#include "game.hpp"
+#include "general.hpp"
+
+CBasePlayer *CBasePlayer::m_pDealer = nullptr;
 int CBasePlayer::m_iMaxHandCards = 8;
 
 CBasePlayer::CBasePlayer()
@@ -683,7 +687,7 @@ int CPlayer::SelectCard()
    gpGeneral->DrawText(msg("discardcardselect"), 30, 270, 255, 255, 24);
 
    int i, sel = -1;
-   CButton *b[8] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
+   CButton *b[8] = {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr};
 
    for (i = 0; i < m_iNumHandCard; i++) {
       b[i] = new CButton(i + 1, 10 + i * 48, 400, 48, 78, 0, 0, 0);
@@ -700,7 +704,7 @@ int CPlayer::SelectCard()
    }
 
    for (i = 0; i < 8; i++) {
-      if (b[i] != NULL) {
+      if (b[i] != nullptr) {
          delete b[i];
       }
    }

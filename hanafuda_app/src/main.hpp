@@ -36,7 +36,8 @@
 #include <unistd.h>
 #endif
 
-#include "SDL.h"
+#include <SDL.h>
+#include "ini.hpp"
 
 #ifdef WITH_CONFIG_H
 #include "config.h"
@@ -59,15 +60,15 @@
 #endif
 
 #ifndef SOUND_DIR
-#define SOUND_DIR DATA_ROOT "sound/"
+#define SOUND_DIR DATA_DIR "sfx/"
 #endif
 
 #ifndef IMAGES_DIR
-#define IMAGES_DIR DATA_ROOT "images/"
+#define IMAGES_DIR DATA_DIR "gfx/"
 #endif
 
 #ifndef FONTS_DIR
-#define FONTS_DIR DATA_ROOT "fonts/"
+#define FONTS_DIR DATA_DIR "fonts/"
 #endif
 
 extern SDL_Surface *gpScreen;
@@ -126,14 +127,6 @@ void SOUND_FillAudio(void *udata, unsigned char *stream, int len);
 void SOUND_PlayWAV(SDL_AudioCVT *audio);
 void SOUND_FreeWAV(SDL_AudioCVT *audio);
 SDL_AudioCVT *SOUND_LoadWAV(const char *filename);
-
-#include "ini.h"
-#include "font.h"
-#include "general.h"
-#include "card.h"
-#include "player.h"
-#include "game.h"
-#include "bot.h"
 
 extern CIniFile cfg;
 

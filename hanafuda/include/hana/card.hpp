@@ -18,8 +18,8 @@
 // 02110-1301, USA
 //
 
-#ifndef CARD_H
-#define CARD_H
+#ifndef CARD_HPP
+#define CARD_HPP
 
 enum
 {
@@ -28,14 +28,14 @@ enum
    CARD_RIBBON,
    CARD_RIBBON_RED,
    CARD_RIBBON_BLUE,
-   CARD_LIGHT,
+   CARD_LIGHT
 };
 
 enum
 {
-   EF_NONE      = 0,
-   EF_DARK      = (1 << 0),
-   EF_BOX       = (1 << 1),
+   EF_NONE = 0,
+   EF_DARK = (1 << 0),
+   EF_BOX = (1 << 1)
 };
 
 class CCard

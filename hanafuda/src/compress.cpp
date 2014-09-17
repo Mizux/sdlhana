@@ -158,7 +158,7 @@ int Encode(const char *filename, unsigned char *header, int headersize, unsigned
    FILE *pOut;
 
    pOut  = fopen(filename, "wb");
-   if (pOut == NULL)
+   if (pOut == nullptr)
       return -1; // bail
 
    // Write Header first
@@ -271,7 +271,7 @@ int Decode(const char *filename, int headersize, unsigned char *buffer, int bufs
    FILE *pIn;
 
    pIn = fopen(filename, "rb");
-   if (pIn == NULL)
+   if (pIn == nullptr)
       return -1; // bail
 
    // Skip Header

@@ -18,7 +18,8 @@
 // 02110-1301, USA
 //
 
-#include "main.h"
+#include "font.hpp"
+#include "main.hpp"
 
 CFont::CFont():
 m_iNumChar(0),

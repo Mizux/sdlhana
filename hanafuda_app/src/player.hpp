@@ -21,6 +21,9 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include <cassert>
+#include <hana/card.hpp>
+
 typedef struct result_s
 {
    int        score;

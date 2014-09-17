@@ -36,8 +36,8 @@ enum
    NUM_SOUND,
 };
 
-#include "font.h"
-#include "card.h"
+#include "font.hpp"
+#include <hana/card.hpp>
 
 class CGeneral
 {
