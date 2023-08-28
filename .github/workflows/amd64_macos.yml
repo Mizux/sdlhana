@@ -25,7 +25,8 @@ jobs:
     - name: Install SDL
       run: |
         brew update
-        brew install sdl2 sdl2_image sdl12-compat
+        brew install sdl2 sdl2_image
+        brew install sdl12-compat sdl_image
     - name: Check cmake
       run: cmake --version
     - name: Configure
