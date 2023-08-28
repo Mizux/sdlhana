@@ -22,6 +22,10 @@ jobs:
       INSTALL_TARGET: ${{ matrix.build[4] }}
     steps:
     - uses: actions/checkout@v3
+    - name: Install SDL
+      run: |
+        brew update
+        brew install sdl2 sdl2_image sdl12-compat
     - name: Check cmake
       run: cmake --version
     - name: Configure
