@@ -1,1 +1,16 @@
+build/
+build*/
+export/
+cache/
+
+# IDE
+## VSCode
+.vs/
+.cache/
+## Kdevelop
+.kdev4/
+*.kdev4
+## vim
+compile_commands.json
+*.swp
 *.user
