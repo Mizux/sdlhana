@@ -22,8 +22,10 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <type_traits>
 
 #include "game.hpp"
+#include "hana/card.hpp"
 extern CGame* gpGame;
 
 CBot::CBot() {}
@@ -70,8 +72,11 @@ int CBot::SelectCard() {
       if (j == goal || goal == -1) {
         score += 80;
       }
-      score += gpGame->GetDeskCard(m_PossibleMoves[i].deskindex).GetType() * 15;
-      score += m_HandCards[m_PossibleMoves[i].handindex].GetType() * 10;
+      score += std::underlying_type_t<EFFECT>(
+                   gpGame->GetDeskCard(m_PossibleMoves[i].deskindex).GetType()) *
+               15;
+      score +=
+          std::underlying_type_t<EFFECT>(m_HandCards[m_PossibleMoves[i].handindex].GetType()) * 10;
       score += m_PossibleMoves[i].hand[j] - m_rgHandPercent[j];
       if (m_rgOpnHandPercent[HAND_MAX] >= 60 || m_rgOpnHandPercent[HAND_SAKECUP] > 0) {
         // Opponent is about to win. Try to stop him.
@@ -100,7 +105,7 @@ int CBot::DiscardCard() {
   for (i = 0; i < m_iNumHandCard; i++) {
     CCard c = m_HandCards[i];
 
-    int score = 5000 - c.GetType() * 30;
+    int score = 5000 - std::underlying_type_t<EFFECT>(c.GetType()) * 30;
     score += (CardIsSafe(c) ? 300 : 0);
     score -= CardIsDangerous(c) * 150;
     score += NumMonthInHand(c.GetMonth()) * 50;
@@ -212,7 +217,7 @@ int CBot::SelectCardOnDesk(int month, const CCard& drawn) {
       if (j == goal || goal == -1) {
         score += 80;
       }
-      score += gpGame->GetDeskCard(index[i]).GetType() * 15;
+      score += std::underlying_type_t<EFFECT>(gpGame->GetDeskCard(index[i]).GetType()) * 15;
       score += hand[i][j] - m_rgHandPercent[j];
       if (hand[i][j] - m_rgHandPercent[j] > 0 && hand[i][j] >= 100) {
         score += 500; // picking this card will result in immediate winning hand
@@ -281,9 +286,9 @@ void CBot::AnalyzeHand(int* hand, int* opnhand) {
 
   for (i = 0; i < m_iNumCapturedCard; i++) {
     CCard& c    = m_CapturedCard[i];
-    int    type = c.GetType();
+    auto   type = c.GetType();
 
-    if (type == CARD_LIGHT) {
+    if (type == TYPE::LIGHT) {
       // This is a light card
       num_lights++;
       if (c.IsRain()) {
@@ -293,21 +298,21 @@ void CBot::AnalyzeHand(int* hand, int* opnhand) {
       } else if (c.IsFlower()) {
         has_flower = true;
       }
-    } else if (type == CARD_RIBBON_RED) {
+    } else if (type == TYPE::RIBBON_RED) {
       // This is a red ribbon card
       num_red++;
       num_ribbons++;
-    } else if (type == CARD_RIBBON_BLUE) {
+    } else if (type == TYPE::RIBBON_BLUE) {
       // This is a blue ribbon card
       num_blue++;
       num_ribbons++;
-    } else if (type == CARD_RIBBON) {
+    } else if (type == TYPE::RIBBON) {
       // This is a normal ribbon card
       num_ribbons++;
       if (c.GetMonth() != 11) {
         num_grass++;
       }
-    } else if (type == CARD_ANIMAL) {
+    } else if (type == TYPE::ANIMAL) {
       // This is an animal card
       num_animals++;
       if (c.IsSakeCup()) {
@@ -322,7 +327,7 @@ void CBot::AnalyzeHand(int* hand, int* opnhand) {
       // This is a normal card
       num_cards++;
       if (gpGame->GetGameMode() == GAMEMODE_KOREAN) {
-        if (c.GetValue() == 43 || c.GetValue() == 45) {
+        if (c.GetID() == 43 || c.GetID() == 45) {
           num_cards++; // these 2 cards counts as 2 normal cards each
         }
       }
@@ -361,9 +366,9 @@ void CBot::AnalyzeHand(int* hand, int* opnhand) {
 
   for (i = 0; i < GetOpponent()->GetNumCapturedCard(); i++) {
     CCard c    = GetOpponent()->GetCapturedCard(i);
-    int   type = c.GetType();
+    auto  type = c.GetType();
 
-    if (type == CARD_LIGHT) {
+    if (type == TYPE::LIGHT) {
       // This is a light card
       num_lights++;
       if (c.IsRain()) {
@@ -373,21 +378,21 @@ void CBot::AnalyzeHand(int* hand, int* opnhand) {
       } else if (c.IsFlower()) {
         has_flower = true;
       }
-    } else if (type == CARD_RIBBON_RED) {
+    } else if (type == TYPE::RIBBON_RED) {
       // This is a red ribbon card
       num_red++;
       num_ribbons++;
-    } else if (type == CARD_RIBBON_BLUE) {
+    } else if (type == TYPE::RIBBON_BLUE) {
       // This is a blue ribbon card
       num_blue++;
       num_ribbons++;
-    } else if (type == CARD_RIBBON) {
+    } else if (type == TYPE::RIBBON) {
       // This is a normal ribbon card
       num_ribbons++;
       if (c.GetMonth() != 11) {
         num_grass++;
       }
-    } else if (type == CARD_ANIMAL) {
+    } else if (type == TYPE::ANIMAL) {
       // This is an animal card
       num_animals++;
       if (c.IsSakeCup()) {
@@ -402,7 +407,7 @@ void CBot::AnalyzeHand(int* hand, int* opnhand) {
       // This is a normal card
       num_cards++;
       if (gpGame->GetGameMode() == GAMEMODE_KOREAN) {
-        if (c.GetValue() == 43 || c.GetValue() == 45) {
+        if (c.GetID() == 43 || c.GetID() == 45) {
           num_cards++; // these 2 cards counts as 2 normal cards each
         }
       }
@@ -513,7 +518,7 @@ int CBot::AnalyzeGoal() {
 
   for (i = 0; i < m_iNumHandCard; i++) {
     CCard& c = m_HandCards[i];
-    if (c.GetType() == CARD_LIGHT) {
+    if (c.GetType() == TYPE::LIGHT) {
       if (m_rgHandPercent[HAND_LIGHTS] >= 0) {
         if (goalvalue[HAND_LIGHTS] > 0) {
           goalvalue[HAND_LIGHTS] += 20;
@@ -524,7 +529,7 @@ int CBot::AnalyzeGoal() {
           goalvalue[HAND_SAKECUP] += 30;
         }
       }
-    } else if (c.GetType() == CARD_ANIMAL) {
+    } else if (c.GetType() == TYPE::ANIMAL) {
       if (goalvalue[HAND_ANIMALS] > 0) {
         goalvalue[HAND_ANIMALS] += 10;
       }
@@ -540,7 +545,7 @@ int CBot::AnalyzeGoal() {
           }
         }
       }
-    } else if (c.GetType() == CARD_RIBBON_RED) {
+    } else if (c.GetType() == TYPE::RIBBON_RED) {
       if (m_rgHandPercent[HAND_RED_RIBBONS] >= 0) {
         if (goalvalue[HAND_RED_RIBBONS] > 0) {
           goalvalue[HAND_RED_RIBBONS] += 15;
@@ -549,7 +554,7 @@ int CBot::AnalyzeGoal() {
       if (goalvalue[HAND_RIBBONS] > 0) {
         goalvalue[HAND_RIBBONS] += 10;
       }
-    } else if (c.GetType() == CARD_RIBBON_BLUE) {
+    } else if (c.GetType() == TYPE::RIBBON_BLUE) {
       if (m_rgHandPercent[HAND_BLUE_RIBBONS] >= 0) {
         if (goalvalue[HAND_BLUE_RIBBONS] > 0) {
           goalvalue[HAND_BLUE_RIBBONS] += 15;
@@ -558,7 +563,7 @@ int CBot::AnalyzeGoal() {
       if (goalvalue[HAND_RIBBONS] > 0) {
         goalvalue[HAND_RIBBONS] += 10;
       }
-    } else if (c.GetType() == CARD_RIBBON) {
+    } else if (c.GetType() == TYPE::RIBBON) {
       if (c.GetMonth() != 11 && m_rgHandPercent[HAND_NORMAL_RIBBONS] >= 0) {
         if (goalvalue[HAND_NORMAL_RIBBONS] > 0) {
           goalvalue[HAND_NORMAL_RIBBONS] += 15;
@@ -576,7 +581,7 @@ int CBot::AnalyzeGoal() {
 
   for (i = 0; i < gpGame->GetNumDeskCard(); i++) {
     CCard c = gpGame->GetDeskCard(i);
-    if (c.GetType() == CARD_LIGHT) {
+    if (c.GetType() == TYPE::LIGHT) {
       if (m_rgHandPercent[HAND_LIGHTS] >= 0) {
         if (goalvalue[HAND_LIGHTS] > 0) {
           goalvalue[HAND_LIGHTS] += 10;
@@ -587,7 +592,7 @@ int CBot::AnalyzeGoal() {
           goalvalue[HAND_SAKECUP] += 15;
         }
       }
-    } else if (c.GetType() == CARD_ANIMAL) {
+    } else if (c.GetType() == TYPE::ANIMAL) {
       if (goalvalue[HAND_ANIMALS] > 0) {
         goalvalue[HAND_ANIMALS] += 5;
       }
@@ -603,7 +608,7 @@ int CBot::AnalyzeGoal() {
           }
         }
       }
-    } else if (c.GetType() == CARD_RIBBON_RED) {
+    } else if (c.GetType() == TYPE::RIBBON_RED) {
       if (m_rgHandPercent[HAND_RED_RIBBONS] >= 0) {
         if (goalvalue[HAND_RED_RIBBONS] > 0) {
           goalvalue[HAND_RED_RIBBONS] += 8;
@@ -612,7 +617,7 @@ int CBot::AnalyzeGoal() {
       if (goalvalue[HAND_RIBBONS] > 0) {
         goalvalue[HAND_RIBBONS] += 5;
       }
-    } else if (c.GetType() == CARD_RIBBON_BLUE) {
+    } else if (c.GetType() == TYPE::RIBBON_BLUE) {
       if (m_rgHandPercent[HAND_BLUE_RIBBONS] >= 0) {
         if (goalvalue[HAND_BLUE_RIBBONS] > 0) {
           goalvalue[HAND_BLUE_RIBBONS] += 8;
@@ -621,7 +626,7 @@ int CBot::AnalyzeGoal() {
       if (goalvalue[HAND_RIBBONS] > 0) {
         goalvalue[HAND_RIBBONS] += 5;
       }
-    } else if (c.GetType() == CARD_RIBBON) {
+    } else if (c.GetType() == TYPE::RIBBON) {
       if (c.GetMonth() != 11 && m_rgHandPercent[HAND_NORMAL_RIBBONS] >= 0) {
         if (goalvalue[HAND_NORMAL_RIBBONS] > 0) {
           goalvalue[HAND_NORMAL_RIBBONS] += 8;
@@ -711,8 +716,8 @@ int CBot::CardIsDangerous(const CCard& c) {
           return HAND_CARDS;
 
         case HAND_RIBBONS:
-          if (c.GetType() == CARD_RIBBON || c.GetType() == CARD_RIBBON_RED ||
-              c.GetType() == CARD_RIBBON_BLUE) {
+          if (c.GetType() == TYPE::RIBBON || c.GetType() == TYPE::RIBBON_RED ||
+              c.GetType() == TYPE::RIBBON_BLUE) {
             return HAND_RIBBONS;
           }
           j = c.GetMonth() - 1;
@@ -727,7 +732,7 @@ int CBot::CardIsDangerous(const CCard& c) {
           return HAND_RIBBONS;
 
         case HAND_ANIMALS:
-          if (c.GetType() == CARD_ANIMAL) {
+          if (c.GetType() == TYPE::ANIMAL) {
             return HAND_ANIMALS;
           }
           j = c.GetMonth() - 1;

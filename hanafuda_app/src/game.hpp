@@ -23,8 +23,7 @@
 
 #include <SDL.h>
 
-#include <hana/card.hpp>
-
+#include "hana/card.hpp"
 #include "player.hpp"
 
 enum {

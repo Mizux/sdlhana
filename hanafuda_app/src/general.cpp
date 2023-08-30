@@ -257,11 +257,11 @@ SDL_Surface* CGeneral::RenderCard(const CCard& c, int w, int h) {
   UTIL_FillRect(s, 1, h, w, 1, 1, 1, 1);
 
   SDL_Rect dstrect, dstrect2;
-  if (c.GetValue() >= 48) {
+  if (c.GetID() >= 48) {
     dstrect.x = pw * 2;
     dstrect.y = ph * 12;
   } else {
-    dstrect.x = (c.GetValue() & 3) * pw;
+    dstrect.x = (c.GetID() & 3) * pw;
     dstrect.y = (c.GetMonth() - 1) * ph;
   }
   dstrect.w  = pw;
@@ -272,7 +272,7 @@ SDL_Surface* CGeneral::RenderCard(const CCard& c, int w, int h) {
 
   UTIL_ScaleBlit(m_imgCards, &dstrect, s, &dstrect2);
 
-  if (c.m_iRenderEffect & EF_DARK) {
+  if (c.m_iRenderEffect & static_cast<std::underlying_type<EFFECT>::type>(EFFECT::DARK)) {
     int           i, j;
     unsigned char r, g, b;
     for (i = 0; i < s->w; i++) {
@@ -286,7 +286,7 @@ SDL_Surface* CGeneral::RenderCard(const CCard& c, int w, int h) {
     }
   }
 
-  if (c.m_iRenderEffect & EF_BOX) {
+  if (c.m_iRenderEffect & static_cast<std::underlying_type<EFFECT>::type>(EFFECT::BOX)) {
     UTIL_RectShade(s, 0, 0, w, h, 255, 255, 0, 0, 255, 255, 255, 0, 255);
     UTIL_RectShade(s, 1, 1, w - 2, h - 2, 255, 255, 0, 0, 255, 255, 255, 0, 255);
   }

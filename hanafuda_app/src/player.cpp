@@ -1,4 +1,3 @@
-//
 // Copyright (c) 2005, 2006 Wei Mingzhi <whistler@openoffice.org>
 // All Rights Reserved.
 //
@@ -16,7 +15,6 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 // 02110-1301, USA
-//
 
 #include "player.hpp"
 
@@ -106,9 +104,9 @@ void CBasePlayer::CalcResult() {
 
   for (i = 0; i < m_iNumCapturedCard; i++) {
     CCard& c    = m_CapturedCard[i];
-    int    type = c.GetType();
+    auto   type = c.GetType();
 
-    if (type == CARD_LIGHT) {
+    if (type == TYPE::LIGHT) {
       // This is a light card
       num_lights++;
       if (c.IsRain()) {
@@ -118,21 +116,21 @@ void CBasePlayer::CalcResult() {
       } else if (c.IsFlower()) {
         has_flower = true;
       }
-    } else if (type == CARD_RIBBON_RED) {
+    } else if (type == TYPE::RIBBON_RED) {
       // This is a red ribbon card
       num_red++;
       num_ribbons++;
-    } else if (type == CARD_RIBBON_BLUE) {
+    } else if (type == TYPE::RIBBON_BLUE) {
       // This is a blue ribbon card
       num_blue++;
       num_ribbons++;
-    } else if (type == CARD_RIBBON) {
+    } else if (type == TYPE::RIBBON) {
       // This is a normal ribbon card
       num_ribbons++;
       if (c.GetMonth() != 11) {
         num_grass++;
       }
-    } else if (type == CARD_ANIMAL) {
+    } else if (type == TYPE::ANIMAL) {
       // This is an animal card
       num_animals++;
       if (c.IsSakeCup()) {
@@ -151,7 +149,7 @@ void CBasePlayer::CalcResult() {
       // This is a normal card
       num_cards++;
       if (gpGame->GetGameMode() == GAMEMODE_KOREAN) {
-        if (c.GetValue() == 43 || c.GetValue() == 45) {
+        if (c.GetID() == 43 || c.GetID() == 45) {
           num_cards++; // these 2 cards counts as 2 normal cards each
         }
       }
@@ -307,7 +305,7 @@ void CBasePlayer::CalcAddResult() {
   if (m_Result.five_lights || m_Result.four_lights || m_Result.rain_four_lights ||
       m_Result.three_lights || m_Result.rain_three_lights) {
     for (i = 0; i < GetOpponent()->GetNumCapturedCard(); i++) {
-      if (GetOpponent()->GetCapturedCard(i).GetType() == CARD_LIGHT) {
+      if (GetOpponent()->GetCapturedCard(i).GetType() == TYPE::LIGHT) {
         break;
       }
     }
@@ -320,10 +318,10 @@ void CBasePlayer::CalcAddResult() {
   if (m_Result.cards) {
     int opn_num_cards = 0;
     for (i = 0; i < GetOpponent()->GetNumCapturedCard(); i++) {
-      if (GetOpponent()->GetCapturedCard(i).GetType() == CARD_NONE) {
+      if (GetOpponent()->GetCapturedCard(i).GetType() == TYPE::NONE) {
         opn_num_cards++;
-        if (GetOpponent()->GetCapturedCard(i).GetValue() == 43 ||
-            GetOpponent()->GetCapturedCard(i).GetValue() == 45) {
+        if (GetOpponent()->GetCapturedCard(i).GetID() == 43 ||
+            GetOpponent()->GetCapturedCard(i).GetID() == 45) {
           opn_num_cards++;
         }
       } else if (GetOpponent()->GetCapturedCard(i).IsSakeCup()) {
@@ -374,29 +372,29 @@ void CBasePlayer::DrawCurResult() {
     }                                          \
   }
 
-#define DRAW_RESULT(r, cards, s)                                       \
-  {                                                                    \
-    if (cur_result.r > 0) {                                            \
-      int i, j;                                                        \
-      for (i = 0; i < m_iNumCapturedCard; i++) {                       \
-        j = 0;                                                         \
-        while (cards[j] != 255) {                                      \
-          if (m_CapturedCard[i].GetValue() == cards[j]) {              \
-            m_CapturedCard[i].m_iRenderEffect |= EF_BOX;               \
-            break;                                                     \
-          }                                                            \
-          j++;                                                         \
-        }                                                              \
-      }                                                                \
-      DrawCaptured();                                                  \
-      DRAW_BOX_TEXT(                                                   \
-          va("%s [%d %s]",                                             \
-             msg(#r),                                                  \
-             m_Result.r* s,                                            \
-             ((s * m_Result.r <= 1) ? msg("point") : msg("points")))); \
-      CLEAR_EFFECT;                                                    \
-      DrawCaptured();                                                  \
-    }                                                                  \
+#define DRAW_RESULT(r, cards, s)                                                              \
+  {                                                                                           \
+    if (cur_result.r > 0) {                                                                   \
+      int i, j;                                                                               \
+      for (i = 0; i < m_iNumCapturedCard; i++) {                                              \
+        j = 0;                                                                                \
+        while (cards[j] != 255) {                                                             \
+          if (m_CapturedCard[i].GetID() == cards[j]) {                                        \
+            m_CapturedCard[i].m_iRenderEffect |= std::underlying_type_t<EFFECT>(EFFECT::BOX); \
+            break;                                                                            \
+          }                                                                                   \
+          j++;                                                                                \
+        }                                                                                     \
+      }                                                                                       \
+      DrawCaptured();                                                                         \
+      DRAW_BOX_TEXT(                                                                          \
+          va("%s [%d %s]",                                                                    \
+             msg(#r),                                                                         \
+             m_Result.r* s,                                                                   \
+             ((s * m_Result.r <= 1) ? msg("point") : msg("points"))));                        \
+      CLEAR_EFFECT;                                                                           \
+      DrawCaptured();                                                                         \
+    }                                                                                         \
   }
 
   unsigned char r_lights[]         = {0, 8, 28, 40, 44, 255};
@@ -518,7 +516,7 @@ void CBasePlayer::DrawAllResult() {
 bool CBasePlayer::HasCaptured(const CCard& c) const {
   int i;
   for (i = 0; i < m_iNumCapturedCard; i++) {
-    if (m_CapturedCard[i].GetValue() == c.GetValue()) {
+    if (m_CapturedCard[i].GetID() == c.GetID()) {
       return true;
     }
   }
@@ -570,7 +568,7 @@ void CBasePlayer::DrawCaptured() {
   int   num_spec = 0, num_norm = 0, i, j;
 
   for (i = 0; i < m_iNumCapturedCard; i++) {
-    if (m_CapturedCard[i].GetType() == 0) {
+    if (m_CapturedCard[i].GetType() == TYPE::NONE) {
       norm[num_norm++] = m_CapturedCard[i];
     } else {
       spec[num_spec++] = m_CapturedCard[i];

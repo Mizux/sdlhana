@@ -1,4 +1,3 @@
-//
 // Copyright (c) 2005, 2006 Wei Mingzhi <whistler@openoffice.org>
 // All Rights Reserved.
 //
@@ -16,7 +15,6 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 // 02110-1301, USA
-//
 
 #include "game.hpp"
 
@@ -558,7 +556,7 @@ void CGame::CardDiscarded(const CCard& c, CBasePlayer* current, int sx, int sy) 
   } else if (count == 2) {
     // Two cards match the discarded one
     if (m_DeskCards[index[0]].GetType() == m_DeskCards[index[1]].GetType()) {
-      if (m_DeskCards[index[1]].GetValue() == 43 || m_DeskCards[index[1]].GetValue() == 45) {
+      if (m_DeskCards[index[1]].GetID() == 43 || m_DeskCards[index[1]].GetID() == 45) {
         // These two cards counts as 2 normal cards each in Korean game,
         // so always pick these ones
         slot = index[1];
@@ -801,7 +799,7 @@ void CGame::CardDiscarded(const CCard& c, CBasePlayer* current, int sx, int sy) 
   } else if (count == 2) {
     // Two cards match the discarded one
     if (m_DeskCards[index[0]].GetType() == m_DeskCards[index[1]].GetType()) {
-      if (m_DeskCards[index[1]].GetValue() == 43 || m_DeskCards[index[1]].GetValue() == 45) {
+      if (m_DeskCards[index[1]].GetID() == 43 || m_DeskCards[index[1]].GetID() == 45) {
         // These two cards counts as 2 normal cards each in Korean game,
         // so always pick these ones
         slot = index[1];
@@ -873,10 +871,10 @@ void CGame::GetOneCardFromOpponent(CBasePlayer* current) {
   int index = -1, index2 = -1, i;
   for (i = 0; i < current->GetOpponent()->GetNumCapturedCard(); i++) {
     const CCard& c = current->GetOpponent()->GetCapturedCard(i);
-    if (c.GetType() != CARD_NONE) {
+    if (c.GetType() != TYPE::NONE) {
       continue;
     }
-    if (c.GetValue() == 43 || c.GetValue() == 45) {
+    if (c.GetID() == 43 || c.GetID() == 45) {
       index2 = i;
     } else {
       index = i;
@@ -960,7 +958,7 @@ int CGame::SelectCardOnDesk(int month) {
       index[count] = i;
       b[count]     = new CButton(count, 140 + (i / 2) * 48, 100 + (i & 1) * 78, 48, 78, 0, 0, 0);
       count++;
-      m_DeskCards[i].m_iRenderEffect |= EF_BOX;
+      m_DeskCards[i].m_iRenderEffect |= std::underlying_type_t<EFFECT>(EFFECT::BOX);
       gpGeneral->DrawCard(m_DeskCards[i], 140 + (i / 2) * 48, 100 + (i & 1) * 78, 48, 78, true);
     }
   }
@@ -986,7 +984,8 @@ int CGame::SelectCardOnDesk(int month) {
   SDL_FreeSurface(save);
 
   for (i = 0; i < m_iNumDeskCard; i++) {
-    m_DeskCards[i].m_iRenderEffect &= ~(EF_DARK | EF_BOX);
+    m_DeskCards[i].m_iRenderEffect &= ~(
+        std::underlying_type_t<EFFECT>(EFFECT::DARK) | std::underlying_type_t<EFFECT>(EFFECT::BOX));
   }
 
   return index[count];

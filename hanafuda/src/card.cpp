@@ -18,67 +18,42 @@
 // 02110-1301, USA
 //
 
+#include "hana/card.hpp"
+
 #include <cassert>
+#include <cstdlib>
 #include <cstring>
-#include <hana/card.hpp>
 #include <iostream>
+#include <unordered_set>
 
 unsigned char CCard::m_ucCardFlags[6];
 
-CCard::CCard() : m_iRenderEffect(0), m_iValue(255) {}
-
-CCard::CCard(unsigned char value) : m_iRenderEffect(0), m_iValue(value) {}
+CCard::CCard(id_type value) : m_iRenderEffect(0), id_(value) {}
 
 CCard::~CCard() {}
 
-int CCard::GetType() const {
-  unsigned char lights[]      = {0, 8, 28, 40, 44, 255};
-  unsigned char animals[]     = {4, 12, 16, 20, 24, 29, 32, 36, 41, 255};
-  unsigned char ribbons[]     = {13, 17, 25, 42, 255};
-  unsigned char redribbons[]  = {1, 5, 9, 255};
-  unsigned char blueribbons[] = {21, 33, 37, 255};
+enum TYPE CCard::GetType() const {
+  std::unordered_set<int> lights = {0, 8, 28, 40, 44, 255};
+  if (lights.contains(id_))
+    return TYPE::LIGHT;
 
-  unsigned char* p = lights;
-  while (*p != 255) {
-    if (m_iValue == *p) {
-      return CARD_LIGHT;
-    }
-    p++;
-  }
+  std::unordered_set<int> animals = {4, 12, 16, 20, 24, 29, 32, 36, 41, 255};
+  if (animals.contains(id_))
+    return TYPE::ANIMAL;
 
-  p = animals;
-  while (*p != 255) {
-    if (m_iValue == *p) {
-      return CARD_ANIMAL;
-    }
-    p++;
-  }
+  std::unordered_set<int> ribbons = {13, 17, 25, 42, 255};
+  if (ribbons.contains(id_))
+    return TYPE::RIBBON;
 
-  p = ribbons;
-  while (*p != 255) {
-    if (m_iValue == *p) {
-      return CARD_RIBBON;
-    }
-    p++;
-  }
+  std::unordered_set<int> ribbons_red = {1, 5, 9, 255};
+  if (ribbons_red.contains(id_))
+    return TYPE::RIBBON_RED;
 
-  p = redribbons;
-  while (*p != 255) {
-    if (m_iValue == *p) {
-      return CARD_RIBBON_RED;
-    }
-    p++;
-  }
+  std::unordered_set<int> ribbons_blue = {21, 33, 37, 255};
+  if (ribbons_blue.contains(id_))
+    return TYPE::RIBBON_BLUE;
 
-  p = blueribbons;
-  while (*p != 255) {
-    if (m_iValue == *p) {
-      return CARD_RIBBON_BLUE;
-    }
-    p++;
-  }
-
-  return CARD_NONE;
+  return TYPE::NONE;
 }
 
 void CCard::NewRound() {
@@ -109,6 +84,6 @@ CCard CCard::GetRandomCard() {
 
 void CCard::PutBackToPile(const CCard& c) {
   assert(c.IsValid());
-  unsigned char value = c.GetValue();
+  unsigned char value = c.GetID();
   m_ucCardFlags[value / 8] &= ~(1 << (value & 7));
 }

@@ -21,38 +21,64 @@
 #ifndef CARD_HPP
 #define CARD_HPP
 
-enum { CARD_NONE = 0, CARD_ANIMAL, CARD_RIBBON, CARD_RIBBON_RED, CARD_RIBBON_BLUE, CARD_LIGHT };
+#include <cstdint>
 
-enum { EF_NONE = 0, EF_DARK = (1 << 0), EF_BOX = (1 << 1) };
+enum class TYPE : std::uint8_t {
+  NONE = 0,
+  ANIMAL,
+  RIBBON,
+  RIBBON_RED,
+  RIBBON_BLUE,
+  LIGHT,
+};
+
+enum class EFFECT : std::uint8_t {
+  NONE = 0,
+  DARK = (1 << 0),
+  BOX  = (1 << 1),
+};
 
 class CCard {
  public:
-  CCard();
-  CCard(unsigned char value);
+  using id_type = std::uint8_t;
+
+  CCard(id_type value = 255);
   ~CCard();
 
-  inline int GetValue() const { return m_iValue; }
-  inline int GetMonth() const { return m_iValue / 4 + 1; }
+  inline id_type GetID() const { return id_; }
+  inline id_type GetMonth() const { return id_ / 4 + 1; }
 
   inline bool operator==(const CCard& c) const { return GetMonth() == c.GetMonth(); }
   inline bool operator!=(const CCard& c) const { return GetMonth() != c.GetMonth(); }
 
-  int        GetType() const;
+  enum TYPE  GetType() const;
   inline int GetOrder() const {
-    int t = GetType();
-    return ((t == CARD_ANIMAL) ? 4 : ((t >= CARD_RIBBON && t <= CARD_RIBBON_BLUE) ? t - 1 : t));
+    switch (GetType()) {
+      case TYPE::LIGHT:
+        return 5;
+      case TYPE::ANIMAL:
+        return 4;
+      case TYPE::RIBBON_BLUE:
+        return 3;
+      case TYPE::RIBBON_RED:
+        return 2;
+      case TYPE::RIBBON:
+        return 1;
+      case TYPE::NONE:
+        return 0;
+    }
   }
-  inline bool IsRain() const { return (m_iValue == 40); }
-  inline bool IsSakeCup() const { return (m_iValue == 32); }
-  inline bool IsBoar() const { return (m_iValue == 24); }
-  inline bool IsDeer() const { return (m_iValue == 36); }
-  inline bool IsButterfly() const { return (m_iValue == 20); }
-  inline bool IsMoon() const { return (m_iValue == 28); }
-  inline bool IsFlower() const { return (m_iValue == 8); }
-  inline bool IsBird() const { return (m_iValue == 4 || m_iValue == 12 || m_iValue == 29); }
+  inline bool IsRain() const { return (id_ == 40); }
+  inline bool IsSakeCup() const { return (id_ == 32); }
+  inline bool IsBoar() const { return (id_ == 24); }
+  inline bool IsDeer() const { return (id_ == 36); }
+  inline bool IsButterfly() const { return (id_ == 20); }
+  inline bool IsMoon() const { return (id_ == 28); }
+  inline bool IsFlower() const { return (id_ == 8); }
+  inline bool IsBird() const { return (id_ == 4 || id_ == 12 || id_ == 29); }
 
-  inline bool IsValid() const { return (m_iValue < 48); }
-  inline void Destroy() { m_iValue = 255; }
+  inline bool IsValid() const { return (id_ < 48); }
+  inline void Destroy() { id_ = 255; }
 
   static void  NewRound();
   static CCard GetRandomCard();
@@ -61,20 +87,20 @@ class CCard {
   static unsigned char m_ucCardFlags[6];
 
   inline CCard Next() const {
-    if (m_iValue >= 47)
+    if (id_ >= 47)
       return CCard(0);
-    return CCard(m_iValue + 1);
+    return CCard(id_ + 1);
   }
   inline CCard Prev() const {
-    if (m_iValue <= 1)
+    if (id_ <= 1)
       return CCard(47);
-    return CCard(m_iValue - 1);
+    return CCard(id_ - 1);
   }
 
   unsigned int m_iRenderEffect;
 
  private:
-  unsigned char m_iValue;
+  std::uint8_t id_;
 };
 
 #endif
