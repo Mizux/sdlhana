@@ -33,23 +33,23 @@ CCard::CCard(id_type value) : m_iRenderEffect(0), id_(value) {}
 CCard::~CCard() {}
 
 enum TYPE CCard::GetType() const {
-  std::unordered_set<int> lights = {0, 8, 28, 40, 44, 255};
+  std::unordered_set<int> lights = {0, 8, 28, 40, 44};
   if (lights.contains(id_))
     return TYPE::LIGHT;
 
-  std::unordered_set<int> animals = {4, 12, 16, 20, 24, 29, 32, 36, 41, 255};
+  std::unordered_set<int> animals = {4, 12, 16, 20, 24, 29, 32, 36, 41};
   if (animals.contains(id_))
     return TYPE::ANIMAL;
 
-  std::unordered_set<int> ribbons = {13, 17, 25, 42, 255};
+  std::unordered_set<int> ribbons = {13, 17, 25, 42};
   if (ribbons.contains(id_))
     return TYPE::RIBBON;
 
-  std::unordered_set<int> ribbons_red = {1, 5, 9, 255};
+  std::unordered_set<int> ribbons_red = {1, 5, 9};
   if (ribbons_red.contains(id_))
     return TYPE::RIBBON_RED;
 
-  std::unordered_set<int> ribbons_blue = {21, 33, 37, 255};
+  std::unordered_set<int> ribbons_blue = {21, 33, 37};
   if (ribbons_blue.contains(id_))
     return TYPE::RIBBON_BLUE;
 
@@ -84,6 +84,6 @@ CCard CCard::GetRandomCard() {
 
 void CCard::PutBackToPile(const CCard& c) {
   assert(c.IsValid());
-  unsigned char value = c.GetID();
+  auto value = c.GetID();
   m_ucCardFlags[value / 8] &= ~(1 << (value & 7));
 }
