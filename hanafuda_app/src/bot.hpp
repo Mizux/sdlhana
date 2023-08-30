@@ -25,66 +25,62 @@
 
 #define MAX_MOVES 160
 
-enum
-{
-   HAND_MAX = 0,
-   HAND_MAXNUM,
-   HAND_CARDS,
-   HAND_RIBBONS,
-   HAND_ANIMALS,
-   HAND_RED_RIBBONS,
-   HAND_BLUE_RIBBONS,
-   HAND_NORMAL_RIBBONS,
-   HAND_SAKECUP,
-   HAND_BOAR,
-   HAND_BIRD,
-   HAND_LIGHTS,
+enum {
+  HAND_MAX = 0,
+  HAND_MAXNUM,
+  HAND_CARDS,
+  HAND_RIBBONS,
+  HAND_ANIMALS,
+  HAND_RED_RIBBONS,
+  HAND_BLUE_RIBBONS,
+  HAND_NORMAL_RIBBONS,
+  HAND_SAKECUP,
+  HAND_BOAR,
+  HAND_BIRD,
+  HAND_LIGHTS,
 
-   HAND_COUNT,
+  HAND_COUNT,
 };
 
-typedef struct move_s
-{
-   int handindex;
-   int deskindex;
-   int hand[HAND_COUNT];
-   int opnhand[HAND_COUNT];
-   int month;
+typedef struct move_s {
+  int handindex;
+  int deskindex;
+  int hand[HAND_COUNT];
+  int opnhand[HAND_COUNT];
+  int month;
 } move_t;
 
-class CBot : public CBasePlayer
-{
-public:
-   CBot();
-   ~CBot();
+class CBot : public CBasePlayer {
+ public:
+  CBot();
+  ~CBot();
 
-   bool      IsBot()               { return true; }
-   int       SelectCard();
-   bool      WantToContinue();
-   int       SelectCardOnDesk(int month, const CCard &drawn);
+  bool IsBot() { return true; }
+  int  SelectCard();
+  bool WantToContinue();
+  int  SelectCardOnDesk(int month, const CCard& drawn);
 
-private:
-   void      AnalyzeMoves();
-   void      AnalyzeHand(int *hand = nullptr, int *opnhand = nullptr);
-   int       AnalyzeGoal();
-   int       DiscardCard();
+ private:
+  void AnalyzeMoves();
+  void AnalyzeHand(int* hand = nullptr, int* opnhand = nullptr);
+  int  AnalyzeGoal();
+  int  DiscardCard();
 
-   int       NumMonthInHand(int month);
-   int       NumMonthExposed(int month);
-   int       NumMonthCaptured(int month);
-   int       NumMonthInvisible(int month);
+  int NumMonthInHand(int month);
+  int NumMonthExposed(int month);
+  int NumMonthCaptured(int month);
+  int NumMonthInvisible(int month);
 
-   bool      CardIsSafe(const CCard &c);
-   int       CardIsDangerous(const CCard &c);
+  bool CardIsSafe(const CCard& c);
+  int  CardIsDangerous(const CCard& c);
 
-   move_t    m_PossibleMoves[MAX_MOVES];
-   int       m_iNumPossibleMove;
+  move_t m_PossibleMoves[MAX_MOVES];
+  int    m_iNumPossibleMove;
 
-   int       m_rgHandPercent[HAND_COUNT];
-   int       m_rgOpnHandPercent[HAND_COUNT];
+  int m_rgHandPercent[HAND_COUNT];
+  int m_rgOpnHandPercent[HAND_COUNT];
 
-   int       m_iWantedMove;
+  int m_iWantedMove;
 };
 
 #endif
-

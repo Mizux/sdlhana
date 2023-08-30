@@ -21,13 +21,13 @@
 #ifndef MAIN_H_
 #define MAIN_H_
 
+#include <assert.h>
+#include <limits.h>
+#include <math.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdarg.h>
 #include <time.h>
-#include <math.h>
-#include <limits.h>
-#include <assert.h>
 #ifdef _WIN32
 #include <io.h>
 #include <windows.h>
@@ -37,6 +37,7 @@
 #endif
 
 #include <SDL.h>
+
 #include "ini.hpp"
 
 #ifdef WITH_CONFIG_H
@@ -71,64 +72,138 @@
 #define FONTS_DIR DATA_DIR "fonts/"
 #endif
 
-extern SDL_Surface *gpScreen;
-extern bool g_fNoSound;
+extern SDL_Surface* gpScreen;
+extern bool         g_fNoSound;
 
 // main.cpp functions...
 void UserQuit();
 
 // util.cpp functions...
-void trim(char *str);
-char *va(const char *format, ...);
-int RandomLong(int from, int to);
+void  trim(char* str);
+char* va(const char* format, ...);
+int   RandomLong(int from, int to);
 float RandomFloat(float from, float to);
-int log2(int val);
-void TerminateOnError(const char *fmt, ...);
+int   log2(int val);
+void  TerminateOnError(const char* fmt, ...);
 
-char *UTIL_StrGetLine(const char *buf, int width, int &length);
-unsigned int UTIL_GetPixel(SDL_Surface *surface, int x, int y);
-void UTIL_PutPixel(SDL_Surface *surface, int x, int y, unsigned int pixel);
-int UTIL_GetPixel(SDL_Surface *f, int x, int y, unsigned char *r, unsigned char *g, unsigned char *b);
-int UTIL_PutPixel(SDL_Surface *f, int x, int y, unsigned char r, unsigned char g, unsigned char b);
-int UTIL_PutPixelAlpha(SDL_Surface *f, int x, int y, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
-void UTIL_RevertSurfaceX(SDL_Surface *s);
-void UTIL_RevertSurfaceY(SDL_Surface *s);
-void UTIL_RevertSurfaceXY(SDL_Surface *s);
-SDL_Surface *UTIL_ScaleSurface(SDL_Surface *s, int w, int h);
-int UTIL_ScaleBlit(SDL_Surface *src, SDL_Rect *sr, SDL_Surface *dst, SDL_Rect *dr);
-void UTIL_Scale2X(SDL_Surface *src, SDL_Surface *dst);
-void UTIL_HorzLine(SDL_Surface *surface, short x, short y, short l, unsigned char r, unsigned char g, unsigned char b);
-void UTIL_VertLine(SDL_Surface *surface, short x, short y, short l, unsigned char r, unsigned char g, unsigned char b);
-void UTIL_Rect(SDL_Surface *surface, int x1, int y1, int w, int h, int r, int g, int b);
-void UTIL_VertLineShade(SDL_Surface *surface, short x, short y, short l, unsigned char r1, unsigned char g1, unsigned char b1, unsigned char r2, unsigned char g2, unsigned char b2);
-void UTIL_HorzLineShade(SDL_Surface *surface, short x, short y, short l, unsigned char r1, unsigned char g1, unsigned char b1, unsigned char r2, unsigned char g2, unsigned char b2);
-void UTIL_RectShade(SDL_Surface *surface, int x, int y, int w, int h, int r1, int g1, int b1, int r2, int g2, int b2, int rt, int gt, int bt);
-void UTIL_FillRect(SDL_Surface *surface, int x, int y, int w, int h, int r, int g, int b);
-void UTIL_FillRectAlpha(SDL_Surface *surface, int x, int y, int w, int h, int r, int g, int b, int a);
+char*        UTIL_StrGetLine(const char* buf, int width, int& length);
+unsigned int UTIL_GetPixel(SDL_Surface* surface, int x, int y);
+void         UTIL_PutPixel(SDL_Surface* surface, int x, int y, unsigned int pixel);
+int          UTIL_GetPixel(
+             SDL_Surface*   f,
+             int            x,
+             int            y,
+             unsigned char* r,
+             unsigned char* g,
+             unsigned char* b);
+int UTIL_PutPixel(SDL_Surface* f, int x, int y, unsigned char r, unsigned char g, unsigned char b);
+int UTIL_PutPixelAlpha(
+    SDL_Surface*  f,
+    int           x,
+    int           y,
+    unsigned char r,
+    unsigned char g,
+    unsigned char b,
+    unsigned char a);
+void         UTIL_RevertSurfaceX(SDL_Surface* s);
+void         UTIL_RevertSurfaceY(SDL_Surface* s);
+void         UTIL_RevertSurfaceXY(SDL_Surface* s);
+SDL_Surface* UTIL_ScaleSurface(SDL_Surface* s, int w, int h);
+int          UTIL_ScaleBlit(SDL_Surface* src, SDL_Rect* sr, SDL_Surface* dst, SDL_Rect* dr);
+void         UTIL_Scale2X(SDL_Surface* src, SDL_Surface* dst);
+void         UTIL_HorzLine(
+            SDL_Surface*  surface,
+            short         x,
+            short         y,
+            short         l,
+            unsigned char r,
+            unsigned char g,
+            unsigned char b);
+void UTIL_VertLine(
+    SDL_Surface*  surface,
+    short         x,
+    short         y,
+    short         l,
+    unsigned char r,
+    unsigned char g,
+    unsigned char b);
+void UTIL_Rect(SDL_Surface* surface, int x1, int y1, int w, int h, int r, int g, int b);
+void UTIL_VertLineShade(
+    SDL_Surface*  surface,
+    short         x,
+    short         y,
+    short         l,
+    unsigned char r1,
+    unsigned char g1,
+    unsigned char b1,
+    unsigned char r2,
+    unsigned char g2,
+    unsigned char b2);
+void UTIL_HorzLineShade(
+    SDL_Surface*  surface,
+    short         x,
+    short         y,
+    short         l,
+    unsigned char r1,
+    unsigned char g1,
+    unsigned char b1,
+    unsigned char r2,
+    unsigned char g2,
+    unsigned char b2);
+void UTIL_RectShade(
+    SDL_Surface* surface,
+    int          x,
+    int          y,
+    int          w,
+    int          h,
+    int          r1,
+    int          g1,
+    int          b1,
+    int          r2,
+    int          g2,
+    int          b2,
+    int          rt,
+    int          gt,
+    int          bt);
+void UTIL_FillRect(SDL_Surface* surface, int x, int y, int w, int h, int r, int g, int b);
+void UTIL_FillRectAlpha(
+    SDL_Surface* surface,
+    int          x,
+    int          y,
+    int          w,
+    int          h,
+    int          r,
+    int          g,
+    int          b,
+    int          a);
 void UTIL_Delay(int duration);
 void UTIL_ToggleFullScreen();
 
 // text.cpp functions...
-void InitTextMessage();
-void FreeTextMessage();
-const char *msg(const char *name);
+void        InitTextMessage();
+void        FreeTextMessage();
+const char* msg(const char* name);
 
 // compress.cpp functions...
-int Decode(const char *filename, int headersize, unsigned char *buffer, int bufsize);
-int Encode(const char *filename, unsigned char *header, int headersize, unsigned char *buffer, int bufsize);
+int Decode(const char* filename, int headersize, unsigned char* buffer, int bufsize);
+int Encode(
+    const char*    filename,
+    unsigned char* header,
+    int            headersize,
+    unsigned char* buffer,
+    int            bufsize);
 
 // config.cpp functions...
 void LoadCfg();
 void SaveCfg();
 
 // sound.cpp functions...
-int SOUND_OpenAudio(int freq, int format, int channels, int samples);
-void SOUND_FillAudio(void *udata, unsigned char *stream, int len);
-void SOUND_PlayWAV(SDL_AudioCVT *audio);
-void SOUND_FreeWAV(SDL_AudioCVT *audio);
-SDL_AudioCVT *SOUND_LoadWAV(const char *filename);
+int           SOUND_OpenAudio(int freq, int format, int channels, int samples);
+void          SOUND_FillAudio(void* udata, unsigned char* stream, int len);
+void          SOUND_PlayWAV(SDL_AudioCVT* audio);
+void          SOUND_FreeWAV(SDL_AudioCVT* audio);
+SDL_AudioCVT* SOUND_LoadWAV(const char* filename);
 
 extern CIniFile cfg;
 
 #endif
-

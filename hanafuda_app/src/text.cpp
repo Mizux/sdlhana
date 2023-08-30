@@ -19,16 +19,17 @@
 //
 #include <cstdio>
 #include <cstdlib>
+
 #include "main.hpp"
 
 typedef struct textmessage_s {
-  char *name;
-  char *message;
+  char* name;
+  char* message;
 } textmessage_t;
 
-#define  MAX_MESSAGES 512
+#define MAX_MESSAGES 512
 
-static int gMessageTableCount = 0;
+static int           gMessageTableCount = 0;
 static textmessage_t gMessageTable[MAX_MESSAGES];
 
 void FreeTextMessage() {
@@ -47,17 +48,19 @@ void FreeTextMessage() {
   gMessageTableCount = 0;
 }
 
-void InitTextMessage()
-{
-  FILE *fp = fopen(va("%stitles%s.txt", DATA_DIR, cfg.Get("OPTIONS", "Language", "eng")), "r");
+void InitTextMessage() {
+  FILE* fp = fopen(va("%stitles%s.txt", DATA_DIR, cfg.Get("OPTIONS", "Language", "eng")), "r");
   if (fp == NULL) {
-    fprintf(stderr, "WARNING: cannot load %s!\n", va("titles%s.txt", cfg.Get("OPTIONS", "Language", "")));
+    fprintf(
+        stderr,
+        "WARNING: cannot load %s!\n",
+        va("titles%s.txt", cfg.Get("OPTIONS", "Language", "")));
     return;
   }
 
   char buf[256], buf1[256], msgbuf[1024];
   enum { NAME, TEXT } state = NAME;
-  int linenumber = 0;
+  int linenumber            = 0;
 
   FreeTextMessage();
 
@@ -70,39 +73,39 @@ void InitTextMessage()
       continue; // skip empty or comment lines
 
     switch (state) {
-    case NAME:
-      if (strcmp(buf, "}") == 0) {
-        fclose(fp);
-        TerminateOnError("Unexpected \"}\" found in titles.txt, line %d", linenumber);
-      } else if (strcmp(buf, "{") == 0) {
-        state = TEXT;
-        msgbuf[0] = '\0';
-      } else {
-        gMessageTable[gMessageTableCount].name = strdup(buf);
-      }
-      break;
+      case NAME:
+        if (strcmp(buf, "}") == 0) {
+          fclose(fp);
+          TerminateOnError("Unexpected \"}\" found in titles.txt, line %d", linenumber);
+        } else if (strcmp(buf, "{") == 0) {
+          state     = TEXT;
+          msgbuf[0] = '\0';
+        } else {
+          gMessageTable[gMessageTableCount].name = strdup(buf);
+        }
+        break;
 
-    case TEXT:
-      if (strcmp(buf, "{") == 0) {
-        fclose(fp);
-        TerminateOnError("Unexpected \"{\" found in titles.txt, line %d", linenumber);
-      } else if (strcmp(buf, "}") == 0) {
-        char *p = msgbuf;
-        p += strlen(p) - 1;
-        while (*p == '\n' || *p == '\r') {
-          *p-- = '\0'; // remove trailing linefeeds
+      case TEXT:
+        if (strcmp(buf, "{") == 0) {
+          fclose(fp);
+          TerminateOnError("Unexpected \"{\" found in titles.txt, line %d", linenumber);
+        } else if (strcmp(buf, "}") == 0) {
+          char* p = msgbuf;
+          p += strlen(p) - 1;
+          while (*p == '\n' || *p == '\r') {
+            *p-- = '\0'; // remove trailing linefeeds
+          }
+          state                                     = NAME;
+          gMessageTable[gMessageTableCount].message = strdup(msgbuf);
+          gMessageTableCount++;
+          if (gMessageTableCount >= MAX_MESSAGES) {
+            fprintf(stderr, "WARNING: TOO MANY MESSAGES IN TITIES.TXT, MAX IS %d\n", MAX_MESSAGES);
+            goto end;
+          }
+        } else {
+          strncat(msgbuf, buf1, 1024 - 1 - strlen(msgbuf));
         }
-        state = NAME;
-        gMessageTable[gMessageTableCount].message = strdup(msgbuf);
-        gMessageTableCount++;
-        if (gMessageTableCount >= MAX_MESSAGES) {
-          fprintf(stderr, "WARNING: TOO MANY MESSAGES IN TITIES.TXT, MAX IS %d\n", MAX_MESSAGES);
-          goto end;
-        }
-      } else {
-        strncat(msgbuf, buf1, 1024 - 1 - strlen(msgbuf));
-      }
-      break;
+        break;
     }
   }
 
@@ -110,12 +113,10 @@ end:
   fclose(fp);
 }
 
-const char *msg(const char *name)
-{
+const char* msg(const char* name) {
   for (int i = 0; i < gMessageTableCount; i++) {
     if (strcmp(gMessageTable[i].name, name) == 0)
       return gMessageTable[i].message;
   }
   return name;
 }
-

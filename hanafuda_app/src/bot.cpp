@@ -18,17 +18,17 @@
 // 02110-1301, USA
 //
 
-#include <iostream>
-#include <cstdlib>
 #include "bot.hpp"
+
+#include <cstdlib>
+#include <iostream>
+
 #include "game.hpp"
-extern CGame *gpGame;
+extern CGame* gpGame;
 
-CBot::CBot() {
-}
+CBot::CBot() {}
 
-CBot::~CBot() {
-}
+CBot::~CBot() {}
 
 int CBot::SelectCard() {
   AnalyzeHand();
@@ -43,11 +43,10 @@ int CBot::SelectCard() {
 
   for (i = 0; i < m_iNumPossibleMove; i++) {
     for (j = handtype; j < HAND_COUNT; j++) {
-      if (m_PossibleMoves[i].hand[j] > m_rgHandPercent[j] &&
-          m_PossibleMoves[i].hand[j] > prev) {
+      if (m_PossibleMoves[i].hand[j] > m_rgHandPercent[j] && m_PossibleMoves[i].hand[j] > prev) {
         handtype = j;
-        prev = m_PossibleMoves[i].hand[j];
-        index = i; // select this card
+        prev     = m_PossibleMoves[i].hand[j];
+        index    = i; // select this card
       }
     }
   }
@@ -61,9 +60,9 @@ int CBot::SelectCard() {
   }
 
   int goal = AnalyzeGoal();
-  index = -1;
+  index    = -1;
   handtype = HAND_MAXNUM + 1;
-  prev = -1;
+  prev     = -1;
 
   for (i = 0; i < m_iNumPossibleMove; i++) {
     for (j = handtype; j < HAND_COUNT; j++) {
@@ -77,13 +76,14 @@ int CBot::SelectCard() {
       if (m_rgOpnHandPercent[HAND_MAX] >= 60 || m_rgOpnHandPercent[HAND_SAKECUP] > 0) {
         // Opponent is about to win. Try to stop him.
         score += (m_rgOpnHandPercent[HAND_MAX] - m_PossibleMoves[i].opnhand[HAND_MAX]) * 2;
-        score += CardIsDangerous(gpGame->GetDeskCard(m_PossibleMoves[i].deskindex)) * m_rgOpnHandPercent[HAND_MAX] / 2;
+        score += CardIsDangerous(gpGame->GetDeskCard(m_PossibleMoves[i].deskindex)) *
+                 m_rgOpnHandPercent[HAND_MAX] / 2;
       }
       for (int k = HAND_MAXNUM + 1; k < HAND_COUNT; k++) {
         score += (m_PossibleMoves[i].hand[k] - m_rgHandPercent[k]) / 5;
       }
       if (score > prev) {
-        prev = score;
+        prev  = score;
         index = i; // select this card
       }
     }
@@ -108,7 +108,7 @@ int CBot::DiscardCard() {
 
     if (score > max) {
       index = i;
-      max = score;
+      max   = score;
     }
   }
 
@@ -176,10 +176,10 @@ bool CBot::WantToContinue() {
     }
   }
 
-  return ((rand() % 300+1) < score);
+  return ((rand() % 300 + 1) < score);
 }
 
-int CBot::SelectCardOnDesk(int month, const CCard &drawn) {
+int CBot::SelectCardOnDesk(int month, const CCard& drawn) {
   if (month == m_PossibleMoves[m_iWantedMove].month) {
     return m_PossibleMoves[m_iWantedMove].deskindex;
   }
@@ -190,8 +190,8 @@ int CBot::SelectCardOnDesk(int month, const CCard &drawn) {
   for (i = 0; i < gpGame->GetNumDeskCard(); i++) {
     if (gpGame->GetDeskCard(i).GetMonth() == month) {
       if (count >= 2) {
-          std::cerr << "CBot::SelectCardOnDesk(): count >= 2";
-          exit(1);
+        std::cerr << "CBot::SelectCardOnDesk(): count >= 2";
+        exit(1);
       }
       index[count++] = i;
     }
@@ -226,7 +226,7 @@ int CBot::SelectCardOnDesk(int month, const CCard &drawn) {
         score += (hand[i][k] - m_rgHandPercent[k]) / 5;
       }
       if (score > max) {
-        max = score;
+        max    = score;
         chosen = i; // select this card
       }
     }
@@ -244,13 +244,13 @@ void CBot::AnalyzeMoves() {
       if (gpGame->GetDeskCard(i) == m_HandCards[j]) {
         m_PossibleMoves[m_iNumPossibleMove].deskindex = i;
         m_PossibleMoves[m_iNumPossibleMove].handindex = j;
-        m_PossibleMoves[m_iNumPossibleMove].month = m_HandCards[j].GetMonth();
+        m_PossibleMoves[m_iNumPossibleMove].month     = m_HandCards[j].GetMonth();
 
         // now try what can be archived after this move
         m_CapturedCard[m_iNumCapturedCard++] = m_HandCards[j];
         m_CapturedCard[m_iNumCapturedCard++] = gpGame->GetDeskCard(i);
-        AnalyzeHand(m_PossibleMoves[m_iNumPossibleMove].hand,
-                    m_PossibleMoves[m_iNumPossibleMove].opnhand);
+        AnalyzeHand(
+            m_PossibleMoves[m_iNumPossibleMove].hand, m_PossibleMoves[m_iNumPossibleMove].opnhand);
         m_iNumCapturedCard -= 2;
 
         m_iNumPossibleMove++;
@@ -259,7 +259,7 @@ void CBot::AnalyzeMoves() {
   }
 }
 
-void CBot::AnalyzeHand(int *hand, int *opnhand) {
+void CBot::AnalyzeHand(int* hand, int* opnhand) {
   if (hand == nullptr) {
     hand = m_rgHandPercent;
   }
@@ -280,8 +280,8 @@ void CBot::AnalyzeHand(int *hand, int *opnhand) {
   int i;
 
   for (i = 0; i < m_iNumCapturedCard; i++) {
-    CCard &c = m_CapturedCard[i];
-    int type = c.GetType();
+    CCard& c    = m_CapturedCard[i];
+    int    type = c.GetType();
 
     if (type == CARD_LIGHT) {
       // This is a light card
@@ -329,27 +329,26 @@ void CBot::AnalyzeHand(int *hand, int *opnhand) {
     }
   }
 
-  hand[HAND_CARDS] = num_cards * 10;
-  hand[HAND_ANIMALS] = num_animals * 20;
-  hand[HAND_RIBBONS] = num_ribbons * 20;
-  hand[HAND_LIGHTS] = num_lights * 34 - (has_rain ? 17 : 0);
-  hand[HAND_RED_RIBBONS] = num_red * 34;
+  hand[HAND_CARDS]        = num_cards * 10;
+  hand[HAND_ANIMALS]      = num_animals * 20;
+  hand[HAND_RIBBONS]      = num_ribbons * 20;
+  hand[HAND_LIGHTS]       = num_lights * 34 - (has_rain ? 17 : 0);
+  hand[HAND_RED_RIBBONS]  = num_red * 34;
   hand[HAND_BLUE_RIBBONS] = num_blue * 34;
   if (gpGame->GetGameMode() == GAMEMODE_KOREAN) {
     hand[HAND_NORMAL_RIBBONS] = num_grass * 34;
-    hand[HAND_BIRD] = num_birds * 34;
-    hand[HAND_BOAR] = -1;
-    hand[HAND_SAKECUP] = -1;
+    hand[HAND_BIRD]           = num_birds * 34;
+    hand[HAND_BOAR]           = -1;
+    hand[HAND_SAKECUP]        = -1;
   } else {
     hand[HAND_BOAR] = num_boar * 34;
     if (gpGame->GetGameMode() != GAMEMODE_BET) {
-      hand[HAND_SAKECUP] = (has_sakecup ? 60 : 0) +
-          (has_moon ? 40 : 0) + (has_flower ? 40 : 0);
+      hand[HAND_SAKECUP] = (has_sakecup ? 60 : 0) + (has_moon ? 40 : 0) + (has_flower ? 40 : 0);
     } else {
       hand[HAND_SAKECUP] = -1;
     }
     hand[HAND_NORMAL_RIBBONS] = -1;
-    hand[HAND_BIRD] = -1;
+    hand[HAND_BIRD]           = -1;
   }
 
   // now check the opponent's hand
@@ -357,12 +356,12 @@ void CBot::AnalyzeHand(int *hand, int *opnhand) {
   num_red = num_blue = num_grass = 0;
   num_cards = num_birds = num_boar = 0;
 
-  has_rain = false;
+  has_rain    = false;
   has_sakecup = false, has_moon = false, has_flower = false;
 
   for (i = 0; i < GetOpponent()->GetNumCapturedCard(); i++) {
-    CCard c = GetOpponent()->GetCapturedCard(i);
-    int type = c.GetType();
+    CCard c    = GetOpponent()->GetCapturedCard(i);
+    int   type = c.GetType();
 
     if (type == CARD_LIGHT) {
       // This is a light card
@@ -410,61 +409,50 @@ void CBot::AnalyzeHand(int *hand, int *opnhand) {
     }
   }
 
-  opnhand[HAND_CARDS] = num_cards * 10;
-  opnhand[HAND_ANIMALS] = num_animals * 20;
-  opnhand[HAND_RIBBONS] = num_ribbons * 20;
-  opnhand[HAND_LIGHTS] = num_lights * 34 - (has_rain ? 17 : 0);
-  opnhand[HAND_RED_RIBBONS] = num_red * 34;
+  opnhand[HAND_CARDS]        = num_cards * 10;
+  opnhand[HAND_ANIMALS]      = num_animals * 20;
+  opnhand[HAND_RIBBONS]      = num_ribbons * 20;
+  opnhand[HAND_LIGHTS]       = num_lights * 34 - (has_rain ? 17 : 0);
+  opnhand[HAND_RED_RIBBONS]  = num_red * 34;
   opnhand[HAND_BLUE_RIBBONS] = num_blue * 34;
   if (gpGame->GetGameMode() == GAMEMODE_KOREAN) {
     opnhand[HAND_NORMAL_RIBBONS] = num_grass * 34;
-    opnhand[HAND_BIRD] = num_birds * 34;
-    opnhand[HAND_BOAR] = -1;
-    opnhand[HAND_SAKECUP] = -1;
+    opnhand[HAND_BIRD]           = num_birds * 34;
+    opnhand[HAND_BOAR]           = -1;
+    opnhand[HAND_SAKECUP]        = -1;
   } else {
     opnhand[HAND_BOAR] = num_boar * 34;
     if (gpGame->GetGameMode() != GAMEMODE_BET) {
-      opnhand[HAND_SAKECUP] = (has_sakecup ? 60 : 0) +
-          (has_moon ? 40 : 0) + (has_flower ? 40 : 0);
+      opnhand[HAND_SAKECUP] = (has_sakecup ? 60 : 0) + (has_moon ? 40 : 0) + (has_flower ? 40 : 0);
     } else {
       opnhand[HAND_SAKECUP] = -1;
     }
     opnhand[HAND_NORMAL_RIBBONS] = -1;
-    opnhand[HAND_BIRD] = -1;
+    opnhand[HAND_BIRD]           = -1;
   }
 
-  if (hand[HAND_RED_RIBBONS] > 0 &&
-      opnhand[HAND_RED_RIBBONS] > 0)
-  {
-    hand[HAND_RED_RIBBONS] = 0;
+  if (hand[HAND_RED_RIBBONS] > 0 && opnhand[HAND_RED_RIBBONS] > 0) {
+    hand[HAND_RED_RIBBONS]    = 0;
     opnhand[HAND_RED_RIBBONS] = 0;
   }
 
-  if (hand[HAND_BLUE_RIBBONS] > 0 &&
-      opnhand[HAND_BLUE_RIBBONS] > 0)
-  {
-    hand[HAND_BLUE_RIBBONS] = 0;
+  if (hand[HAND_BLUE_RIBBONS] > 0 && opnhand[HAND_BLUE_RIBBONS] > 0) {
+    hand[HAND_BLUE_RIBBONS]    = 0;
     opnhand[HAND_BLUE_RIBBONS] = 0;
   }
 
-  if (hand[HAND_NORMAL_RIBBONS] > 0 &&
-      opnhand[HAND_NORMAL_RIBBONS] > 0)
-  {
-    hand[HAND_NORMAL_RIBBONS] = 0;
+  if (hand[HAND_NORMAL_RIBBONS] > 0 && opnhand[HAND_NORMAL_RIBBONS] > 0) {
+    hand[HAND_NORMAL_RIBBONS]    = 0;
     opnhand[HAND_NORMAL_RIBBONS] = 0;
   }
 
-  if (hand[HAND_BOAR] > 0 &&
-      opnhand[HAND_BOAR] > 0)
-  {
-    hand[HAND_BOAR] = 0;
+  if (hand[HAND_BOAR] > 0 && opnhand[HAND_BOAR] > 0) {
+    hand[HAND_BOAR]    = 0;
     opnhand[HAND_BOAR] = 0;
   }
 
-  if (hand[HAND_BIRD] > 0 &&
-      opnhand[HAND_BIRD] > 0)
-  {
-    hand[HAND_BIRD] = 0;
+  if (hand[HAND_BIRD] > 0 && opnhand[HAND_BIRD] > 0) {
+    hand[HAND_BIRD]    = 0;
     opnhand[HAND_BIRD] = 0;
   }
 
@@ -484,26 +472,25 @@ void CBot::AnalyzeHand(int *hand, int *opnhand) {
     hand[HAND_SAKECUP] = 0;
   }
 
-  opnhand[HAND_MAX] = 0;
+  opnhand[HAND_MAX]    = 0;
   opnhand[HAND_MAXNUM] = -1;
   for (i = HAND_MAXNUM + 1; i < HAND_COUNT; i++) {
     if (opnhand[i] >= opnhand[HAND_MAX]) {
-      opnhand[HAND_MAX] = opnhand[i];
+      opnhand[HAND_MAX]    = opnhand[i];
       opnhand[HAND_MAXNUM] = i;
     }
   }
-  hand[HAND_MAX] = 0;
+  hand[HAND_MAX]    = 0;
   hand[HAND_MAXNUM] = -1;
   for (i = HAND_MAXNUM + 1; i < HAND_COUNT; i++) {
     if (hand[i] >= hand[HAND_MAX]) {
-      hand[HAND_MAX] = hand[i];
+      hand[HAND_MAX]    = hand[i];
       hand[HAND_MAXNUM] = i;
     }
   }
 }
 
-int CBot::AnalyzeGoal()
-{
+int CBot::AnalyzeGoal() {
   int goalvalue[HAND_COUNT], i, j, max = 0, maxindex = -1;
   for (i = 0; i < HAND_COUNT; i++) {
     goalvalue[i] = 0;
@@ -525,7 +512,7 @@ int CBot::AnalyzeGoal()
   }
 
   for (i = 0; i < m_iNumHandCard; i++) {
-    CCard &c = m_HandCards[i];
+    CCard& c = m_HandCards[i];
     if (c.GetType() == CARD_LIGHT) {
       if (m_rgHandPercent[HAND_LIGHTS] >= 0) {
         if (goalvalue[HAND_LIGHTS] > 0) {
@@ -653,7 +640,7 @@ int CBot::AnalyzeGoal()
   for (i = 0; i < HAND_COUNT; i++) {
     if (goalvalue[i] > max) {
       maxindex = i;
-      max = goalvalue[i];
+      max      = goalvalue[i];
     }
   }
 
@@ -700,13 +687,13 @@ int CBot::NumMonthInvisible(int month) {
   return 4 - NumMonthExposed(month) - NumMonthInHand(month);
 }
 
-bool CBot::CardIsSafe(const CCard &c) {
+bool CBot::CardIsSafe(const CCard& c) {
   // Discarding a card is totally safe if all of the same month are
   // visible
   return (NumMonthInvisible(c.GetMonth()) <= 0);
 }
 
-int CBot::CardIsDangerous(const CCard &c) {
+int CBot::CardIsDangerous(const CCard& c) {
   // Discarding a card is dangerous if the card is of the same month
   // as the opponent is waiting for.
 
@@ -714,115 +701,129 @@ int CBot::CardIsDangerous(const CCard &c) {
     return 0; // card is safe, so it isn't dangerous
   }
 
-  int i, j, k;
+  int   i, j, k;
   CCard c1;
 
   for (i = HAND_COUNT - 1; i > HAND_MAXNUM; i--) {
     if (m_rgOpnHandPercent[i] >= ((i == HAND_SAKECUP) ? 30 : 60)) {
       switch (i) {
-      case HAND_CARDS:
-        return HAND_CARDS;
+        case HAND_CARDS:
+          return HAND_CARDS;
 
-      case HAND_RIBBONS:
-        if (c.GetType() == CARD_RIBBON || c.GetType() == CARD_RIBBON_RED ||
-            c.GetType() == CARD_RIBBON_BLUE)
-        {
+        case HAND_RIBBONS:
+          if (c.GetType() == CARD_RIBBON || c.GetType() == CARD_RIBBON_RED ||
+              c.GetType() == CARD_RIBBON_BLUE) {
+            return HAND_RIBBONS;
+          }
+          j = c.GetMonth() - 1;
+          if (j == 7 || j == 11) {
+            break;
+          }
+          k  = ((j == 10) ? 3 : 2);
+          c1 = j * 12 + k;
+          if (HasCaptured(c1) || GetOpponent()->HasCaptured(c1)) {
+            break;
+          }
           return HAND_RIBBONS;
-        }
-        j = c.GetMonth() - 1;
-        if (j == 7 || j == 11) {
-          break;
-        }
-        k = ((j == 10) ? 3 : 2);
-        c1 = j * 12 + k;
-        if (HasCaptured(c1) || GetOpponent()->HasCaptured(c1)) {
-          break;
-        }
-        return HAND_RIBBONS;
 
-      case HAND_ANIMALS:
-        if (c.GetType() == CARD_ANIMAL) {
+        case HAND_ANIMALS:
+          if (c.GetType() == CARD_ANIMAL) {
+            return HAND_ANIMALS;
+          }
+          j = c.GetMonth() - 1;
+          if (j == 0 || j == 2 || j == 11) {
+            break;
+          }
+          k  = ((j == 10 || j == 7) ? 2 : 1);
+          c1 = j * 12 + k;
+          if (HasCaptured(c1) || GetOpponent()->HasCaptured(c1)) {
+            break;
+          }
           return HAND_ANIMALS;
-        }
-        j = c.GetMonth() - 1;
-        if (j == 0 || j == 2 || j == 11) {
+
+        case HAND_SAKECUP:
+          if ((c.GetMonth() == 3 && !HasCaptured(CCard(8)) &&
+               !GetOpponent()->HasCaptured(CCard(8))) ||
+              (c.GetMonth() == 8 && !HasCaptured(CCard(28)) &&
+               !GetOpponent()->HasCaptured(CCard(28))) ||
+              (c.GetMonth() == 9 && !HasCaptured(CCard(32)) &&
+               !GetOpponent()->HasCaptured(CCard(32)))) {
+            return HAND_SAKECUP;
+          }
           break;
-        }
-        k = ((j == 10 || j == 7) ? 2 : 1);
-        c1 = j * 12 + k;
-        if (HasCaptured(c1) || GetOpponent()->HasCaptured(c1)) {
+
+        case HAND_RED_RIBBONS:
+          if ((c.GetMonth() == 1 && !HasCaptured(CCard(1)) &&
+               !GetOpponent()->HasCaptured(CCard(1))) ||
+              (c.GetMonth() == 2 && !HasCaptured(CCard(5)) &&
+               !GetOpponent()->HasCaptured(CCard(5))) ||
+              (c.GetMonth() == 3 && !HasCaptured(CCard(9)) &&
+               !GetOpponent()->HasCaptured(CCard(9)))) {
+            return HAND_RED_RIBBONS;
+          }
           break;
-        }
-        return HAND_ANIMALS;
 
-      case HAND_SAKECUP:
-        if ((c.GetMonth() == 3 && !HasCaptured(CCard(8)) && !GetOpponent()->HasCaptured(CCard(8))) ||
-            (c.GetMonth() == 8 && !HasCaptured(CCard(28)) && !GetOpponent()->HasCaptured(CCard(28))) ||
-            (c.GetMonth() == 9 && !HasCaptured(CCard(32)) && !GetOpponent()->HasCaptured(CCard(32))))
-        {
-          return HAND_SAKECUP;
-        }
-        break;
+        case HAND_BLUE_RIBBONS:
+          if ((c.GetMonth() == 6 && !HasCaptured(CCard(21)) &&
+               !GetOpponent()->HasCaptured(CCard(21))) ||
+              (c.GetMonth() == 9 && !HasCaptured(CCard(33)) &&
+               !GetOpponent()->HasCaptured(CCard(33))) ||
+              (c.GetMonth() == 10 && !HasCaptured(CCard(37)) &&
+               !GetOpponent()->HasCaptured(CCard(37)))) {
+            return HAND_BLUE_RIBBONS;
+          }
+          break;
 
-      case HAND_RED_RIBBONS:
-        if ((c.GetMonth() == 1 && !HasCaptured(CCard(1)) && !GetOpponent()->HasCaptured(CCard(1))) ||
-            (c.GetMonth() == 2 && !HasCaptured(CCard(5)) && !GetOpponent()->HasCaptured(CCard(5))) ||
-            (c.GetMonth() == 3 && !HasCaptured(CCard(9)) && !GetOpponent()->HasCaptured(CCard(9))))
-        {
-          return HAND_RED_RIBBONS;
-        }
-        break;
+        case HAND_NORMAL_RIBBONS:
+          if ((c.GetMonth() == 4 && !HasCaptured(CCard(13)) &&
+               !GetOpponent()->HasCaptured(CCard(13))) ||
+              (c.GetMonth() == 5 && !HasCaptured(CCard(17)) &&
+               !GetOpponent()->HasCaptured(CCard(17))) ||
+              (c.GetMonth() == 7 && !HasCaptured(CCard(25)) &&
+               !GetOpponent()->HasCaptured(CCard(25)))) {
+            return HAND_NORMAL_RIBBONS;
+          }
+          break;
 
-      case HAND_BLUE_RIBBONS:
-        if ((c.GetMonth() == 6 && !HasCaptured(CCard(21)) && !GetOpponent()->HasCaptured(CCard(21))) ||
-            (c.GetMonth() == 9 && !HasCaptured(CCard(33)) && !GetOpponent()->HasCaptured(CCard(33))) ||
-            (c.GetMonth() == 10 && !HasCaptured(CCard(37)) && !GetOpponent()->HasCaptured(CCard(37))))
-        {
-          return HAND_BLUE_RIBBONS;
-        }
-        break;
+        case HAND_BOAR:
+          if ((c.GetMonth() == 6 && !HasCaptured(CCard(20)) &&
+               !GetOpponent()->HasCaptured(CCard(20))) ||
+              (c.GetMonth() == 7 && !HasCaptured(CCard(24)) &&
+               !GetOpponent()->HasCaptured(CCard(24))) ||
+              (c.GetMonth() == 10 && !HasCaptured(CCard(36)) &&
+               !GetOpponent()->HasCaptured(CCard(36)))) {
+            return HAND_BOAR;
+          }
+          break;
 
-      case HAND_NORMAL_RIBBONS:
-        if ((c.GetMonth() == 4 && !HasCaptured(CCard(13)) && !GetOpponent()->HasCaptured(CCard(13))) ||
-            (c.GetMonth() == 5 && !HasCaptured(CCard(17)) && !GetOpponent()->HasCaptured(CCard(17))) ||
-            (c.GetMonth() == 7 && !HasCaptured(CCard(25)) && !GetOpponent()->HasCaptured(CCard(25))))
-        {
-          return HAND_NORMAL_RIBBONS;
-        }
-        break;
+        case HAND_BIRD:
+          if ((c.GetMonth() == 2 && !HasCaptured(CCard(4)) &&
+               !GetOpponent()->HasCaptured(CCard(4))) ||
+              (c.GetMonth() == 4 && !HasCaptured(CCard(12)) &&
+               !GetOpponent()->HasCaptured(CCard(12))) ||
+              (c.GetMonth() == 8 && !HasCaptured(CCard(29)) &&
+               !GetOpponent()->HasCaptured(CCard(29)))) {
+            return HAND_BIRD;
+          }
+          break;
 
-      case HAND_BOAR:
-        if ((c.GetMonth() == 6 && !HasCaptured(CCard(20)) && !GetOpponent()->HasCaptured(CCard(20))) ||
-            (c.GetMonth() == 7 && !HasCaptured(CCard(24)) && !GetOpponent()->HasCaptured(CCard(24))) ||
-            (c.GetMonth() == 10 && !HasCaptured(CCard(36)) && !GetOpponent()->HasCaptured(CCard(36))))
-        {
-          return HAND_BOAR;
-        }
-        break;
-
-      case HAND_BIRD:
-        if ((c.GetMonth() == 2 && !HasCaptured(CCard(4)) && !GetOpponent()->HasCaptured(CCard(4))) ||
-            (c.GetMonth() == 4 && !HasCaptured(CCard(12)) && !GetOpponent()->HasCaptured(CCard(12))) ||
-            (c.GetMonth() == 8 && !HasCaptured(CCard(29)) && !GetOpponent()->HasCaptured(CCard(29))))
-        {
-          return HAND_BIRD;
-        }
-        break;
-
-      case HAND_LIGHTS:
-        if ((c.GetMonth() == 1 && !HasCaptured(CCard(0)) && !GetOpponent()->HasCaptured(CCard(0))) ||
-            (c.GetMonth() == 3 && !HasCaptured(CCard(8)) && !GetOpponent()->HasCaptured(CCard(8))) ||
-            (c.GetMonth() == 8 && !HasCaptured(CCard(28)) && !GetOpponent()->HasCaptured(CCard(28))) ||
-            (c.GetMonth() == 11 && !HasCaptured(CCard(40)) && !GetOpponent()->HasCaptured(CCard(40))) ||
-            (c.GetMonth() == 12 && !HasCaptured(CCard(44)) && !GetOpponent()->HasCaptured(CCard(44))))
-        {
-          return HAND_LIGHTS;
-        }
-        break;
+        case HAND_LIGHTS:
+          if ((c.GetMonth() == 1 && !HasCaptured(CCard(0)) &&
+               !GetOpponent()->HasCaptured(CCard(0))) ||
+              (c.GetMonth() == 3 && !HasCaptured(CCard(8)) &&
+               !GetOpponent()->HasCaptured(CCard(8))) ||
+              (c.GetMonth() == 8 && !HasCaptured(CCard(28)) &&
+               !GetOpponent()->HasCaptured(CCard(28))) ||
+              (c.GetMonth() == 11 && !HasCaptured(CCard(40)) &&
+               !GetOpponent()->HasCaptured(CCard(40))) ||
+              (c.GetMonth() == 12 && !HasCaptured(CCard(44)) &&
+               !GetOpponent()->HasCaptured(CCard(44)))) {
+            return HAND_LIGHTS;
+          }
+          break;
       }
     }
   }
 
   return 0; // the card isn't dangerous
 }
-

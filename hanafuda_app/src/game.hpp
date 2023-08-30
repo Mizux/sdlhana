@@ -22,64 +22,75 @@
 #define GAME_H
 
 #include <SDL.h>
-#include "player.hpp"
+
 #include <hana/card.hpp>
 
-enum
-{
-   GAMEMODE_KOIKOI = 0,
-   GAMEMODE_BET,
-   GAMEMODE_KOREAN,
+#include "player.hpp"
+
+enum {
+  GAMEMODE_KOIKOI = 0,
+  GAMEMODE_BET,
+  GAMEMODE_KOREAN,
 };
 
-class CGame
-{
-public:
-   CGame();
-   ~CGame();
+class CGame {
+ public:
+  CGame();
+  ~CGame();
 
-   void            MainMenu();
-   void            Settings();
+  void MainMenu();
+  void Settings();
 
-   void            RunGame();
+  void RunGame();
 
-   void            InitGame();
-   void            NewRound();
+  void InitGame();
+  void NewRound();
 
-   void            PlayRound();
+  void PlayRound();
 
-   int             SelectCardOnDesk(int month);
+  int SelectCardOnDesk(int month);
 
-   inline int      GetGameMode() const  { return m_iGameMode; }
+  inline int GetGameMode() const { return m_iGameMode; }
 
-   inline int      GetNumDeskCard()   const  { return m_iNumDeskCard; }
-   inline CCard    GetDeskCard(int i) const  { assert(i >= 0 && i < m_iNumDeskCard); return m_DeskCards[i]; }
+  inline int   GetNumDeskCard() const { return m_iNumDeskCard; }
+  inline CCard GetDeskCard(int i) const {
+    assert(i >= 0 && i < m_iNumDeskCard);
+    return m_DeskCards[i];
+  }
 
-private:
-   int             m_iGameMode;
-   int             m_iScore;
+ private:
+  int m_iGameMode;
+  int m_iScore;
 
-   float           m_flAnimDuration;
+  float m_flAnimDuration;
 
-   CBasePlayer    *m_pPlayers[2];
+  CBasePlayer* m_pPlayers[2];
 
-   CCard           m_DeskCards[24];
-   int             m_iNumDeskCard;
+  CCard m_DeskCards[24];
+  int   m_iNumDeskCard;
 
-   void            InitScreen();
-   void            AnimDeal();
-   SDL_Surface    *AnimCardMove(int sx, int sy, int dx, int dy, int w = 48, int h = 78, SDL_Surface *save = NULL, bool retsave = false, bool retcard = false);
-   void            DrawScore();
-   void            DrawDeskCard();
-   void            CardDiscarded(const CCard &s, CBasePlayer *current, int sx, int sy);
-   void            GetOneCardFromOpponent(CBasePlayer *current);
-   bool            DoubleUp(CBasePlayer *player);
+  void         InitScreen();
+  void         AnimDeal();
+  SDL_Surface* AnimCardMove(
+      int          sx,
+      int          sy,
+      int          dx,
+      int          dy,
+      int          w       = 48,
+      int          h       = 78,
+      SDL_Surface* save    = NULL,
+      bool         retsave = false,
+      bool         retcard = false);
+  void DrawScore();
+  void DrawDeskCard();
+  void CardDiscarded(const CCard& s, CBasePlayer* current, int sx, int sy);
+  void GetOneCardFromOpponent(CBasePlayer* current);
+  bool DoubleUp(CBasePlayer* player);
 
-   int             FindFreeDeskCardSlot(int exclude = -1);
-   void            RemoveDeskCard(int index);
+  int  FindFreeDeskCardSlot(int exclude = -1);
+  void RemoveDeskCard(int index);
 };
 
-extern CGame *gpGame;
+extern CGame* gpGame;
 
 #endif
-

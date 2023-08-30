@@ -22,48 +22,45 @@
 
 #include <SDL.h>
 
-typedef struct fntchar_s
-{
-   unsigned int     code; /* internal code of the character (in UTF-8) */
-   unsigned char    pixeldata[64][8]; /* pixel data of this character (64x64) */
+typedef struct fntchar_s {
+  unsigned int  code;             /* internal code of the character (in UTF-8) */
+  unsigned char pixeldata[64][8]; /* pixel data of this character (64x64) */
 #ifdef __cplusplus
-   bool operator<(const fntchar_s &a) { return code < a.code; }
-   bool operator<=(const fntchar_s &a) { return code <= a.code; }
-   bool operator>(const fntchar_s &a) { return code > a.code; }
-   bool operator>=(const fntchar_s &a) { return code >= a.code; }
+  bool operator<(const fntchar_s& a) { return code < a.code; }
+  bool operator<=(const fntchar_s& a) { return code <= a.code; }
+  bool operator>(const fntchar_s& a) { return code > a.code; }
+  bool operator>=(const fntchar_s& a) { return code >= a.code; }
 #endif
 } fntchar_t;
 
-typedef struct fntfile_header_s
-{
-   char             magic[4]; /* magic code, must be "FNT\0" */
-   unsigned short   num_chars; /* number of characters */
+typedef struct fntfile_header_s {
+  char           magic[4];  /* magic code, must be "FNT\0" */
+  unsigned short num_chars; /* number of characters */
 } fntfile_header_t;
 
 #ifdef __cplusplus
 
-class CFont
-{
-public:
-   CFont();
-   CFont(const char *filename);
-   ~CFont();
+class CFont {
+ public:
+  CFont();
+  CFont(const char* filename);
+  ~CFont();
 
-   inline bool  IsLoaded() { return m_iNumChar > 0; }
+  inline bool IsLoaded() { return m_iNumChar > 0; }
 
-   int          Load(const char *filename);
-   SDL_Surface *Render(const char *sz, int r = 255, int g = 255, int b = 255, int size = 32, bool shadow = true);
+  int Load(const char* filename);
+  SDL_Surface*
+  Render(const char* sz, int r = 255, int g = 255, int b = 255, int size = 32, bool shadow = true);
 
-private:
-   void         Sort(fntchar_t *begin = NULL, fntchar_t *end = NULL);
-   void         FreeAllTheStuff();
-   fntchar_t   *FindChar(unsigned int code);
+ private:
+  void       Sort(fntchar_t* begin = NULL, fntchar_t* end = NULL);
+  void       FreeAllTheStuff();
+  fntchar_t* FindChar(unsigned int code);
 
-   int          m_iNumChar;
-   fntchar_t   *m_pChars;
+  int        m_iNumChar;
+  fntchar_t* m_pChars;
 };
 
 #endif
 
 #endif
-

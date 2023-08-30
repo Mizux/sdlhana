@@ -21,95 +21,92 @@
 #ifndef GENERAL_H
 #define GENERAL_H
 
-enum
-{
-   SOUND_MOVECARD = 0,
-   SOUND_PICKCARD,
-   SOUND_DRAWCARD,
+enum {
+  SOUND_MOVECARD = 0,
+  SOUND_PICKCARD,
+  SOUND_DRAWCARD,
 
-   SOUND_WIN,
-   SOUND_LOSE,
-   SOUND_GO,
-   SOUND_HINT,
-   SOUND_HINT2,
+  SOUND_WIN,
+  SOUND_LOSE,
+  SOUND_GO,
+  SOUND_HINT,
+  SOUND_HINT2,
 
-   NUM_SOUND,
+  NUM_SOUND,
 };
 
-#include "font.hpp"
 #include <hana/card.hpp>
 
-class CGeneral
-{
-public:
-   CGeneral();
-   ~CGeneral();
+#include "font.hpp"
 
-   void          ScreenFade(int duration = 500, SDL_Surface *s = NULL);
-   int           ReadKey();
-   void          UpdateScreen(int x = 0, int y = 0, int w = 0, int h = 0);
+class CGeneral {
+ public:
+  CGeneral();
+  ~CGeneral();
 
-   void          ClearScreen(bool fadein = false, bool fadeout = false, bool bg = false);
+  void ScreenFade(int duration = 500, SDL_Surface* s = NULL);
+  int  ReadKey();
+  void UpdateScreen(int x = 0, int y = 0, int w = 0, int h = 0);
 
-   void          DrawTextBrush(const char *t, int x, int y, int r = 255, int g = 255, int b = 255, int size = 32);
-   void          DrawText(const char *t, int x, int y, int r = 255, int g = 255, int b = 255, int size = 32);
-   SDL_Surface  *RenderCard(const CCard &c, int w = 64, int h = 104);
-   void          DrawCard(const CCard &c, int x, int y, int w = 64, int h = 104, bool update = true);
+  void ClearScreen(bool fadein = false, bool fadeout = false, bool bg = false);
 
-   void          PlaySound(int num);
+  void
+  DrawTextBrush(const char* t, int x, int y, int r = 255, int g = 255, int b = 255, int size = 32);
+  void DrawText(const char* t, int x, int y, int r = 255, int g = 255, int b = 255, int size = 32);
+  SDL_Surface* RenderCard(const CCard& c, int w = 64, int h = 104);
+  void         DrawCard(const CCard& c, int x, int y, int w = 64, int h = 104, bool update = true);
 
-   void          LoadFonts();
-   void          LoadSound();
+  void PlaySound(int num);
 
-private:
-   void          LoadImages();
-   void          FreeImages();
-   void          FreeSound();
+  void LoadFonts();
+  void LoadSound();
 
-   SDL_Surface  *LoadBitmapFile(const char *filename);
-   SDL_AudioCVT *LoadSoundFile(const char *filename);
+ private:
+  void LoadImages();
+  void FreeImages();
+  void FreeSound();
 
-   void          InitCursor();
-   void          FreeCursor();
+  SDL_Surface*  LoadBitmapFile(const char* filename);
+  SDL_AudioCVT* LoadSoundFile(const char* filename);
 
-   SDL_Surface  *m_imgCards, *m_imgBack;
-   SDL_AudioCVT *m_snd[NUM_SOUND];
-   bool          m_fSndLoaded;
+  void InitCursor();
+  void FreeCursor();
 
-   CFont         m_fntBrush, m_fnt;
-   SDL_Cursor   *m_HandCursor;
+  SDL_Surface * m_imgCards, *m_imgBack;
+  SDL_AudioCVT* m_snd[NUM_SOUND];
+  bool          m_fSndLoaded;
+
+  CFont       m_fntBrush, m_fnt;
+  SDL_Cursor* m_HandCursor;
 };
 
-class CBox
-{
-public:
-   CBox(int x, int y, int w, int h, int r, int g, int b, int a = 160, bool keep = false);
-   virtual ~CBox();
+class CBox {
+ public:
+  CBox(int x, int y, int w, int h, int r, int g, int b, int a = 160, bool keep = false);
+  virtual ~CBox();
 
-protected:
-   SDL_Surface  *m_pSavedArea;  // save the area behind this box
-   SDL_Rect      m_SavedRect;
-   bool          m_fFakeBox;
+ protected:
+  SDL_Surface* m_pSavedArea; // save the area behind this box
+  SDL_Rect     m_SavedRect;
+  bool         m_fFakeBox;
 };
 
 #define MAX_BUTTONS 256
 
-class CButton : public CBox
-{
-public:
-   CButton(int id, int x, int y, int w, int h, int r, int g, int b);
-   virtual ~CButton();
+class CButton : public CBox {
+ public:
+  CButton(int id, int x, int y, int w, int h, int r, int g, int b);
+  virtual ~CButton();
 
-   static int bx[MAX_BUTTONS], by[MAX_BUTTONS], bw[MAX_BUTTONS], bh[MAX_BUTTONS];
-   static int bid[MAX_BUTTONS], num_buttons;
+  static int bx[MAX_BUTTONS], by[MAX_BUTTONS], bw[MAX_BUTTONS], bh[MAX_BUTTONS];
+  static int bid[MAX_BUTTONS], num_buttons;
 
-   static int GetButtonId(int x, int y);
+  static int GetButtonId(int x, int y);
 
-private:
-   int m_iId;
+ private:
+  int m_iId;
 };
 
-extern CGeneral *gpGeneral;
+extern CGeneral* gpGeneral;
 
 #endif
-
