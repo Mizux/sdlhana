@@ -89,25 +89,6 @@ int RandomLong(int from, int to) {
   return from + lrand() / (INT_MAX / (to - from + 1));
 }
 
-// This function returns a random floating-point number between (and including) the starting
-// and ending values passed by parameters from and to.
-float RandomFloat(float from, float to) {
-  if (to <= from)
-    return from;
-
-  return from + (float)lrand() / (INT_MAX / (to - from));
-}
-
-int log2(int val) {
-  int answer = 0;
-
-  while ((val >>= 1) != 0) {
-    answer++;
-  }
-
-  return answer;
-}
-
 // This function terminates the game because of an error and
 // prints the message string pointed to by fmt both in the
 // console and in a messagebox.

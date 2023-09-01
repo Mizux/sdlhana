@@ -24,7 +24,7 @@
 #include <cassert>
 #include <hana/card.hpp>
 
-typedef struct result_s {
+struct result_t {
   int score;
 
   char five_lights;
@@ -48,7 +48,7 @@ typedef struct result_s {
   char cards;
 
   char dealer;
-} result_t;
+};
 
 class CBasePlayer {
  public:

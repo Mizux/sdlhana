@@ -67,6 +67,7 @@ class CCard {
       case TYPE::NONE:
         return 0;
     }
+    return 0;
   }
   inline bool IsRain() const { return (id_ == 40); }
   inline bool IsSakeCup() const { return (id_ == 32); }

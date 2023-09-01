@@ -82,8 +82,6 @@ void UserQuit();
 void  trim(char* str);
 char* va(const char* format, ...);
 int   RandomLong(int from, int to);
-float RandomFloat(float from, float to);
-int   log2(int val);
 void  TerminateOnError(const char* fmt, ...);
 
 char*        UTIL_StrGetLine(const char* buf, int width, int& length);
