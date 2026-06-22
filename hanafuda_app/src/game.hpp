@@ -21,7 +21,7 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include "hana/card.hpp"
 #include "player.hpp"

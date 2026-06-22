@@ -18,7 +18,7 @@
 
 #include "game.hpp"
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include <cstdlib>
 
@@ -588,11 +588,11 @@ void CGame::CardDiscarded(const CCard& c, CBasePlayer* current, int sx, int sy) 
       gpScreen->flags & (~SDL_HWSURFACE),
       48,
       78,
-      gpScreen->format->BitsPerPixel,
-      gpScreen->format->Rmask,
-      gpScreen->format->Gmask,
-      gpScreen->format->Bmask,
-      gpScreen->format->Amask);
+      SDL_GetSurfaceFormatDetails(gpScreen)->bits_per_pixel,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Rmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Gmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Bmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Amask);
 
   SDL_Rect dstrect;
   dstrect.x = 60;
@@ -903,11 +903,11 @@ void CGame::GetOneCardFromOpponent(CBasePlayer* current) {
       gpScreen->flags & (~SDL_HWSURFACE),
       48,
       78,
-      gpScreen->format->BitsPerPixel,
-      gpScreen->format->Rmask,
-      gpScreen->format->Gmask,
-      gpScreen->format->Bmask,
-      gpScreen->format->Amask);
+      SDL_GetSurfaceFormatDetails(gpScreen)->bits_per_pixel,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Rmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Gmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Bmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Amask);
 
   SDL_Rect dstrect;
   dstrect.x = 575;
@@ -936,11 +936,11 @@ int CGame::SelectCardOnDesk(int month) {
       gpScreen->flags & (~SDL_HWSURFACE),
       480,
       166,
-      gpScreen->format->BitsPerPixel,
-      gpScreen->format->Rmask,
-      gpScreen->format->Gmask,
-      gpScreen->format->Bmask,
-      gpScreen->format->Amask);
+      SDL_GetSurfaceFormatDetails(gpScreen)->bits_per_pixel,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Rmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Gmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Bmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Amask);
 
   SDL_Rect dstrect;
   dstrect.x = 140;
@@ -1012,11 +1012,11 @@ void CGame::AnimDeal() {
       gpScreen->flags & (~SDL_HWSURFACE),
       48,
       78,
-      gpScreen->format->BitsPerPixel,
-      gpScreen->format->Rmask,
-      gpScreen->format->Gmask,
-      gpScreen->format->Bmask,
-      gpScreen->format->Amask);
+      SDL_GetSurfaceFormatDetails(gpScreen)->bits_per_pixel,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Rmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Gmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Bmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Amask);
 
   SDL_Surface* card;
 
@@ -1121,22 +1121,22 @@ SDL_Surface* CGame::AnimCardMove(
       gpScreen->flags & (~SDL_HWSURFACE),
       w,
       h,
-      gpScreen->format->BitsPerPixel,
-      gpScreen->format->Rmask,
-      gpScreen->format->Gmask,
-      gpScreen->format->Bmask,
-      gpScreen->format->Amask);
+      SDL_GetSurfaceFormatDetails(gpScreen)->bits_per_pixel,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Rmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Gmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Bmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Amask);
 
   if (save == nullptr) {
     save = SDL_CreateRGBSurface(
         gpScreen->flags & (~SDL_HWSURFACE),
         w,
         h,
-        gpScreen->format->BitsPerPixel,
-        gpScreen->format->Rmask,
-        gpScreen->format->Gmask,
-        gpScreen->format->Bmask,
-        gpScreen->format->Amask);
+        SDL_GetSurfaceFormatDetails(gpScreen)->bits_per_pixel,
+        SDL_GetSurfaceFormatDetails(gpScreen)->Rmask,
+        SDL_GetSurfaceFormatDetails(gpScreen)->Gmask,
+        SDL_GetSurfaceFormatDetails(gpScreen)->Bmask,
+        SDL_GetSurfaceFormatDetails(gpScreen)->Amask);
     UTIL_FillRect(save, 0, 0, w, h, 30, 130, 100);
   }
 
@@ -1294,11 +1294,11 @@ bool CGame::DoubleUp(CBasePlayer* player) {
       gpScreen->flags & (~SDL_HWSURFACE),
       48,
       78,
-      gpScreen->format->BitsPerPixel,
-      gpScreen->format->Rmask,
-      gpScreen->format->Gmask,
-      gpScreen->format->Bmask,
-      gpScreen->format->Amask);
+      SDL_GetSurfaceFormatDetails(gpScreen)->bits_per_pixel,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Rmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Gmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Bmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Amask);
 
   SDL_Rect dstrect;
   dstrect.x = 60;

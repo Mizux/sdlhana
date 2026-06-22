@@ -23,42 +23,24 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "SDL.h"
+#include "main.hpp"
 
-static unsigned int   audio_len = 0;
-static unsigned char* audio_pos = nullptr;
-static SDL_AudioSpec  audio_spec;
-bool                  g_fAudioOpened = false;
-
-// The audio function callback takes the following parameters:
-// stream:  A pointer to the audio buffer to be filled
-// len:     The length (in bytes) of the audio buffer
-void SOUND_FillAudio(void* udata, unsigned char* stream, int len) {
-  // Only play if we have data left
-  if (audio_len == 0)
-    return;
-  // Mix as much data as possible
-  len = (len > audio_len) ? audio_len : len;
-  SDL_MixAudio(stream, audio_pos, len, SDL_MIX_MAXVOLUME);
-  audio_pos += len;
-  audio_len -= len;
-}
+static SDL_AudioDeviceID g_AudioDeviceID = 0;
+static SDL_AudioSpec     g_AudioSpec;
+bool                     g_fAudioOpened = false;
 
 int SOUND_OpenAudio(int freq, int format, int channels, int samples) {
   if (g_fAudioOpened) {
     return 0;
   }
 
-  // Set the audio format
-  audio_spec.freq     = freq;
-  audio_spec.format   = format;
-  audio_spec.channels = channels; // 1 = mono, 2 = stereo
-  audio_spec.samples  = samples;
-  audio_spec.callback = SOUND_FillAudio;
-  audio_spec.userdata = nullptr;
+  g_AudioSpec.freq     = freq;
+  g_AudioSpec.format   = (SDL_AudioFormat)format;
+  g_AudioSpec.channels = channels;
 
-  // Open the audio device, forcing the desired format
-  if (SDL_OpenAudio(&audio_spec, nullptr) < 0) {
+  g_AudioDeviceID = SDL_OpenAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &g_AudioSpec);
+
+  if (g_AudioDeviceID == 0) {
     fprintf(stderr, "WARNING: Couldn't open audio: %s\n", SDL_GetError());
     return -1;
   } else {
@@ -68,8 +50,7 @@ int SOUND_OpenAudio(int freq, int format, int channels, int samples) {
 }
 
 SDL_AudioCVT* SOUND_LoadWAV(const char* filename) {
-  SDL_AudioCVT*  wavecvt;
-  SDL_AudioSpec  wavespec, *loaded;
+  SDL_AudioSpec  wavespec;
   unsigned char* buf;
   unsigned int   len;
 
@@ -77,47 +58,35 @@ SDL_AudioCVT* SOUND_LoadWAV(const char* filename) {
     return nullptr;
   }
 
-  wavecvt = (SDL_AudioCVT*)malloc(sizeof(SDL_AudioCVT));
+  if (SDL_LoadWAV(filename, &wavespec, &buf, &len) == -1) {
+    return nullptr;
+  }
+
+  SDL_AudioCVT* wavecvt = (SDL_AudioCVT*)malloc(sizeof(SDL_AudioCVT));
   if (wavecvt == nullptr) {
+    SDL_free(buf);
     return nullptr;
   }
 
-  loaded = SDL_LoadWAV_RW(SDL_RWFromFile(filename, "rb"), 1, &wavespec, &buf, &len);
-  if (loaded == nullptr) {
+  // Convert to device format using AudioStream
+  SDL_AudioStream* stream = SDL_CreateAudioStream(&wavespec, &g_AudioSpec);
+  if (stream == nullptr) {
+    SDL_free(buf);
     free(wavecvt);
     return nullptr;
   }
 
-  // Build the audio converter and create conversion buffers
-  if (SDL_BuildAudioCVT(
-          wavecvt,
-          wavespec.format,
-          wavespec.channels,
-          wavespec.freq,
-          audio_spec.format,
-          audio_spec.channels,
-          audio_spec.freq) < 0) {
-    SDL_FreeWAV(buf);
-    free(wavecvt);
-    return nullptr;
-  }
-  int samplesize = ((wavespec.format & 0xFF) / 8) * wavespec.channels;
-  wavecvt->len   = len & ~(samplesize - 1);
-  wavecvt->buf   = (unsigned char*)malloc(wavecvt->len * wavecvt->len_mult);
-  if (wavecvt->buf == nullptr) {
-    SDL_FreeWAV(buf);
-    free(wavecvt);
-    return nullptr;
-  }
-  memcpy(wavecvt->buf, buf, len);
-  SDL_FreeWAV(buf);
+  SDL_PutAudioStreamData(stream, buf, len);
+  SDL_FlushAudioStream(stream);
 
-  // Run the audio converter
-  if (SDL_ConvertAudio(wavecvt) < 0) {
-    free(wavecvt->buf);
-    free(wavecvt);
-    return nullptr;
-  }
+  int converted_len = (int)SDL_GetAudioStreamQueued(stream);
+  wavecvt->buf      = (unsigned char*)malloc(converted_len);
+  wavecvt->len      = converted_len;
+  wavecvt->len_mult = 1;
+
+  SDL_GetAudioStreamData(stream, wavecvt->buf, converted_len);
+  SDL_DestroyAudioStream(stream);
+  SDL_free(buf);
 
   return wavecvt;
 }
@@ -126,17 +95,26 @@ void SOUND_FreeWAV(SDL_AudioCVT* audio) {
   if (audio == nullptr) {
     return;
   }
-  SDL_FreeWAV(audio->buf);
+  free(audio->buf);
   free(audio);
 }
 
 void SOUND_PlayWAV(SDL_AudioCVT* audio) {
-  if (audio == nullptr) {
-    audio_pos = nullptr;
-    audio_len = -1;
-  } else {
-    audio_pos = audio->buf;
-    audio_len = audio->len * audio->len_mult;
+  if (audio == nullptr || !g_fAudioOpened) {
+    return;
   }
-  SDL_PauseAudio(0);
+
+  // In SDL3, we can just push data to the device's default stream
+  // or we can create a dedicated stream for each sound if we want mixing.
+  // For simplicity, let's use the device's binded stream if available,
+  // but it's easier to just use SDL_PutAudioStreamData on a stream binded to the device.
+  
+  static SDL_AudioStream* playback_stream = nullptr;
+  if (playback_stream == nullptr) {
+      playback_stream = SDL_CreateAudioStream(&g_AudioSpec, &g_AudioSpec);
+      SDL_BindAudioStream(g_AudioDeviceID, playback_stream);
+  }
+  
+  SDL_ClearAudioStream(playback_stream);
+  SDL_PutAudioStreamData(playback_stream, audio->buf, audio->len);
 }

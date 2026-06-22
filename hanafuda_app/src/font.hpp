@@ -20,7 +20,7 @@
 #ifndef FNTFILE_H
 #define FNTFILE_H
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 typedef struct fntchar_s {
   unsigned int  code;             /* internal code of the character (in UTF-8) */

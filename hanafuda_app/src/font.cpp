@@ -90,11 +90,11 @@ SDL_Surface* CFont::Render(const char* sz, int r, int g, int b, int size, bool s
       (gpScreen->flags & (~SDL_HWSURFACE)) | SDL_SRCALPHA,
       size / 2 * (length + 2),
       size,
-      gpScreen->format->BitsPerPixel,
-      gpScreen->format->Rmask,
-      gpScreen->format->Gmask,
-      gpScreen->format->Bmask,
-      gpScreen->format->Amask);
+      SDL_GetSurfaceFormatDetails(gpScreen)->bits_per_pixel,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Rmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Gmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Bmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Amask);
 
   SDL_SetColorKey(s, SDL_SRCCOLORKEY, SDL_MapRGBA(s->format, 0, 0, 0, 0));
   SDL_FillRect(s, NULL, SDL_MapRGBA(s->format, 0, 0, 0, 0));
@@ -153,11 +153,11 @@ SDL_Surface* CFont::Render(const char* sz, int r, int g, int b, int size, bool s
           s->flags,
           (shadow ? 66 : 64),
           (shadow ? 66 : 64),
-          gpScreen->format->BitsPerPixel,
-          gpScreen->format->Rmask,
-          gpScreen->format->Gmask,
-          gpScreen->format->Bmask,
-          gpScreen->format->Amask);
+          SDL_GetSurfaceFormatDetails(gpScreen)->bits_per_pixel,
+          SDL_GetSurfaceFormatDetails(gpScreen)->Rmask,
+          SDL_GetSurfaceFormatDetails(gpScreen)->Gmask,
+          SDL_GetSurfaceFormatDetails(gpScreen)->Bmask,
+          SDL_GetSurfaceFormatDetails(gpScreen)->Amask);
 
       SDL_SetColorKey(char_surface, SDL_SRCCOLORKEY, SDL_MapRGBA(s->format, 0, 0, 0, 0));
       SDL_FillRect(char_surface, NULL, SDL_MapRGBA(char_surface->format, 0, 0, 0, 0));

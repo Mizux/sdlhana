@@ -20,7 +20,7 @@
 
 #include "general.hpp"
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include "main.hpp"
 
@@ -57,11 +57,11 @@ void CGeneral::ScreenFade(int duration, SDL_Surface* s) {
       gpScreen->flags & (~SDL_HWSURFACE),
       gpScreen->w,
       gpScreen->h,
-      gpScreen->format->BitsPerPixel,
-      gpScreen->format->Rmask,
-      gpScreen->format->Gmask,
-      gpScreen->format->Bmask,
-      gpScreen->format->Amask);
+      SDL_GetSurfaceFormatDetails(gpScreen)->bits_per_pixel,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Rmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Gmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Bmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Amask);
 
   if (!pNewFadeSurface) {
     // cannot create surface, just blit the surface to the screen
@@ -142,9 +142,9 @@ int CGeneral::ReadKey() {
 
   while (1) {
     if (SDL_WaitEvent(&event)) {
-      if (event.type == SDL_KEYDOWN) {
+      if (event.type == SDL_EVENT_KEY_DOWN) {
         break;
-      } else if (event.type == SDL_MOUSEBUTTONDOWN) {
+      } else if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
         if (event.button.button == SDL_BUTTON_RIGHT) {
           return SDLK_RIGHT;
         } else if (event.button.button == SDL_BUTTON_LEFT) {
@@ -158,7 +158,7 @@ int CGeneral::ReadKey() {
     }
   }
 
-  return event.key.keysym.sym;
+  return event.key.key;
 }
 
 void CGeneral::UpdateScreen(int x, int y, int w, int h) {
@@ -170,11 +170,11 @@ void CGeneral::ClearScreen(bool fadein, bool fadeout, bool bg) {
       gpScreen->flags,
       gpScreen->w,
       gpScreen->h,
-      gpScreen->format->BitsPerPixel,
-      gpScreen->format->Rmask,
-      gpScreen->format->Gmask,
-      gpScreen->format->Bmask,
-      gpScreen->format->Amask);
+      SDL_GetSurfaceFormatDetails(gpScreen)->bits_per_pixel,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Rmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Gmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Bmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Amask);
 
   if (bg) {
     int w = r->w;
@@ -243,11 +243,11 @@ SDL_Surface* CGeneral::RenderCard(const CCard& c, int w, int h) {
       gpScreen->flags & ~SDL_HWSURFACE,
       w,
       h,
-      gpScreen->format->BitsPerPixel,
-      gpScreen->format->Rmask,
-      gpScreen->format->Gmask,
-      gpScreen->format->Bmask,
-      gpScreen->format->Amask);
+      SDL_GetSurfaceFormatDetails(gpScreen)->bits_per_pixel,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Rmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Gmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Bmask,
+      SDL_GetSurfaceFormatDetails(gpScreen)->Amask);
 
   w--;
   h--;
@@ -458,11 +458,11 @@ CBox::CBox(int x, int y, int w, int h, int r, int g, int b, int a, bool keep) {
         gpScreen->flags,
         w,
         h,
-        gpScreen->format->BitsPerPixel,
-        gpScreen->format->Rmask,
-        gpScreen->format->Gmask,
-        gpScreen->format->Bmask,
-        gpScreen->format->Amask);
+        SDL_GetSurfaceFormatDetails(gpScreen)->bits_per_pixel,
+        SDL_GetSurfaceFormatDetails(gpScreen)->Rmask,
+        SDL_GetSurfaceFormatDetails(gpScreen)->Gmask,
+        SDL_GetSurfaceFormatDetails(gpScreen)->Bmask,
+        SDL_GetSurfaceFormatDetails(gpScreen)->Amask);
 
     m_SavedRect.x = x;
     m_SavedRect.y = y;
