@@ -20,10 +20,12 @@ jobs:
       BUILD_TYPE: ${{ matrix.build[1] }}
     steps:
     - uses: actions/checkout@v7
-    - name: Install SDL
-      run: |
-        sudo apt-get update -q
-        sudo apt-get install -y libsdl1.2-dev libsdl-image1.2-dev
+    - name: Setup SDL3
+      uses: libsdl-org/setup-sdl@main
+      id: sdl
+      with:
+        version: 3-latest
+        version-sdl-image: 3-latest
     - name: Install Ninja
       run: |
         sudo apt-get update
@@ -31,7 +33,11 @@ jobs:
     - name: Check cmake
       run: cmake --version
     - name: Configure
-      run: cmake -S. -Bbuild -G "$GENERATOR" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DCMAKE_INSTALL_PREFIX=install
+      run: >
+        cmake -S. -Bbuild -G "$GENERATOR"
+        -DCMAKE_BUILD_TYPE="$BUILD_TYPE"
+        -DCMAKE_INSTALL_PREFIX=install
+        -DCMAKE_PREFIX_PATH="${{steps.sdl.outputs.prefix}}"
     - name: Build
       run: cmake --build build --config "$BUILD_TYPE" --target all -v
     - name: Test
