@@ -21,7 +21,7 @@ jobs:
       TEST_TARGET: ${{ matrix.build[3] }}
       INSTALL_TARGET: ${{ matrix.build[4] }}
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Install SDL
       run: |
         brew update
