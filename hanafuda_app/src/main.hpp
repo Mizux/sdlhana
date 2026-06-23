@@ -54,11 +54,6 @@
 #endif
 #define SDL_FillRect SDL_FillSurfaceRect
 
-#ifdef SDL_MUSTLOCK
-#undef SDL_MUSTLOCK
-#endif
-#define SDL_MUSTLOCK(s) false
-
 #ifdef SDL_FreeCursor
 #undef SDL_FreeCursor
 #endif

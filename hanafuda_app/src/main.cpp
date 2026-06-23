@@ -113,6 +113,8 @@ int main(int argc, char* argv[]) {
     exit(1);
   }
 
+  SDL_SetSurfaceBlendMode(gpScreen, SDL_BLENDMODE_NONE);
+
   g_fNoSound = (atoi(cfg.Get("OPTIONS", "NoSound", "0")) > 0);
 
   // Open the audio device

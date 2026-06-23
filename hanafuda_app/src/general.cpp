@@ -253,6 +253,7 @@ SDL_Surface* CGeneral::RenderCard(const CCard& c, int w, int h) {
   h--;
 
   SDL_SetColorKey(s, SDL_SRCCOLORKEY, SDL_MapRGBA(s->format, 0, 0, 0, 0));
+  SDL_SetSurfaceBlendMode(s, SDL_BLENDMODE_BLEND);
   UTIL_FillRect(s, w, 1, 1, h - 1, 1, 1, 1);
   UTIL_FillRect(s, 1, h, w, 1, 1, 1, 1);
 
@@ -375,7 +376,10 @@ SDL_Surface* CGeneral::LoadBitmapFile(const char* filename) {
     TerminateOnError("Cannot load Bitmap file %s: %s", filename, SDL_GetError());
   }
 
-  return pic;
+  SDL_Surface* converted = SDL_ConvertSurface(pic, gpScreen->format);
+  SDL_FreeSurface(pic);
+
+  return converted;
 }
 
 SDL_AudioCVT* CGeneral::LoadSoundFile(const char* filename) {

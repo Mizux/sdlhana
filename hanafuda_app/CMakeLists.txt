@@ -8,6 +8,7 @@ find_package(SDL3_image REQUIRED)
 
 file(GLOB_RECURSE _SRCS src/*.cpp src/*.hpp)
 add_executable(${PROJECT_NAME} ${_SRCS})
+target_include_directories(${PROJECT_NAME} PRIVATE src)
 # note: macOS is APPLE and also UNIX !
 if(APPLE)
   set_target_properties(${PROJECT_NAME} PROPERTIES

@@ -268,65 +268,18 @@ int UTIL_GetPixel(
     unsigned char* r,
     unsigned char* g,
     unsigned char* b) {
-  unsigned int   pixel;
-  unsigned char* pp;
-
-  int n; /* general purpose 'n'. */
-
-  if (f == NULL)
-    return -1;
-
-  pp = (unsigned char*)f->pixels;
-
-  if (x >= f->w || y >= f->h)
-    return -1;
-
-  pp += (f->pitch * y);
-  pp += (x * SDL_GetSurfaceFormatDetails(f)->bytes_per_pixel);
-
-  // we do not lock the surface here, it would be inefficient XXX
-  // this reads the pixel as though it was a big-endian integer XXX
-  // I'm trying to avoid reading part the end of the pixel data by
-  // using a data-type that's larger than the pixels
-  for (n = 0, pixel = 0; n < SDL_GetSurfaceFormatDetails(f)->bytes_per_pixel; ++n, ++pp) {
-#if SDL_BYTEORDER == SDL_LIL_ENDIAN
-    pixel >>= 8;
-    pixel |= *pp << (SDL_GetSurfaceFormatDetails(f)->bits_per_pixel - 8);
-#else
-    pixel |= *pp;
-    pixel <<= 8;
-#endif
+  Uint8 a;
+  if (SDL_ReadSurfacePixel(f, x, y, r, g, b, &a)) {
+    return 0;
   }
-
-  SDL_GetRGB(pixel, f->format, r, g, b);
-  return 0;
+  return -1;
 }
 
 int UTIL_PutPixel(SDL_Surface* f, int x, int y, unsigned char r, unsigned char g, unsigned char b) {
-  unsigned int   pixel;
-  unsigned char* pp;
-
-  int n;
-
-  if (f == NULL)
-    return -1;
-
-  pp = (unsigned char*)f->pixels;
-
-  if (x >= f->w || y >= f->h)
-    return -1;
-
-  pp += (f->pitch * y);
-  pp += (x * SDL_GetSurfaceFormatDetails(f)->bytes_per_pixel);
-
-  pixel = SDL_MapRGB(f->format, r, g, b);
-
-  for (n = 0; n < SDL_GetSurfaceFormatDetails(f)->bytes_per_pixel; ++n, ++pp) {
-    *pp = (unsigned char)(pixel & 0xFF);
-    pixel >>= 8;
+  if (SDL_WriteSurfacePixel(f, x, y, r, g, b, 255)) {
+    return 0;
   }
-
-  return 0;
+  return -1;
 }
 
 // Set a pixel of a given SDL Surface with a given colour with alpha

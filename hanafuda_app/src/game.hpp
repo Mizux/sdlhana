@@ -75,11 +75,12 @@ class CGame {
       int          sy,
       int          dx,
       int          dy,
-      int          w       = 48,
-      int          h       = 78,
-      SDL_Surface* save    = NULL,
-      bool         retsave = false,
-      bool         retcard = false);
+      int          w            = 48,
+      int          h            = 78,
+      SDL_Surface* save         = NULL,
+      bool         retsave      = false,
+      bool         retcard      = false,
+      const CCard* pCardToMove = NULL);
   void DrawScore();
   void DrawDeskCard();
   void CardDiscarded(const CCard& s, CBasePlayer* current, int sx, int sy);
