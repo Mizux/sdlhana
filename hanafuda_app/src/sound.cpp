@@ -108,13 +108,13 @@ void SOUND_PlayWAV(SDL_AudioCVT* audio) {
   // or we can create a dedicated stream for each sound if we want mixing.
   // For simplicity, let's use the device's binded stream if available,
   // but it's easier to just use SDL_PutAudioStreamData on a stream binded to the device.
-  
+
   static SDL_AudioStream* playback_stream = nullptr;
   if (playback_stream == nullptr) {
-      playback_stream = SDL_CreateAudioStream(&g_AudioSpec, &g_AudioSpec);
-      SDL_BindAudioStream(g_AudioDeviceID, playback_stream);
+    playback_stream = SDL_CreateAudioStream(&g_AudioSpec, &g_AudioSpec);
+    SDL_BindAudioStream(g_AudioDeviceID, playback_stream);
   }
-  
+
   SDL_ClearAudioStream(playback_stream);
   SDL_PutAudioStreamData(playback_stream, audio->buf, audio->len);
 }

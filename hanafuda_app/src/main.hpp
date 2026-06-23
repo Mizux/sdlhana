@@ -80,16 +80,18 @@
 #define SDL_WM_SetCaption(t, i) SDL_SetWindowTitle(gpWindow, t)
 #define SDL_UpdateRect(s, x, y, w, h) SDL_UpdateWindowSurface(gpWindow)
 #define SDL_Flip(s) SDL_UpdateWindowSurface(gpWindow)
-#define SDL_CreateRGBSurface(f, w, h, bpp, rm, gm, bm, am) SDL_CreateSurface(w, h, (gpScreen ? gpScreen->format : SDL_PIXELFORMAT_XRGB8888))
+#define SDL_CreateRGBSurface(f, w, h, bpp, rm, gm, bm, am) \
+  SDL_CreateSurface(w, h, (gpScreen ? gpScreen->format : SDL_PIXELFORMAT_XRGB8888))
 #define SDLK_LAST 1000
 #define SDL_INIT_TIMER 0
 #define SDL_AUDIO_S16 SDL_AUDIO_S16LE
 #define SDL_MIX_MAXVOLUME 128
 #define SDL_FULLSCREEN SDL_WINDOW_FULLSCREEN
-#define SDL_SoftStretch(src, sr, dst, dr) SDL_BlitSurfaceScaled(src, sr, dst, dr, SDL_SCALEMODE_NEAREST)
+#define SDL_SoftStretch(src, sr, dst, dr) \
+  SDL_BlitSurfaceScaled(src, sr, dst, dr, SDL_SCALEMODE_NEAREST)
 
 inline const SDL_PixelFormatDetails* SDL_GetSurfaceFormatDetails(SDL_Surface* s) {
-    return SDL_GetPixelFormatDetails(s->format);
+  return SDL_GetPixelFormatDetails(s->format);
 }
 
 #undef SDL_GetRGB
@@ -97,15 +99,15 @@ inline const SDL_PixelFormatDetails* SDL_GetSurfaceFormatDetails(SDL_Surface* s)
 #undef SDL_MapRGBA
 
 inline void SDL_GetSurfaceRGB(Uint32 pixel, SDL_PixelFormat format, Uint8* r, Uint8* g, Uint8* b) {
-    SDL_GetRGB(pixel, SDL_GetPixelFormatDetails(format), NULL, r, g, b);
+  SDL_GetRGB(pixel, SDL_GetPixelFormatDetails(format), NULL, r, g, b);
 }
 
 inline Uint32 SDL_MapSurfaceRGB(SDL_PixelFormat format, Uint8 r, Uint8 g, Uint8 b) {
-    return SDL_MapRGB(SDL_GetPixelFormatDetails(format), NULL, r, g, b);
+  return SDL_MapRGB(SDL_GetPixelFormatDetails(format), NULL, r, g, b);
 }
 
 inline Uint32 SDL_MapSurfaceRGBA(SDL_PixelFormat format, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
-    return SDL_MapRGBA(SDL_GetPixelFormatDetails(format), NULL, r, g, b, a);
+  return SDL_MapRGBA(SDL_GetPixelFormatDetails(format), NULL, r, g, b, a);
 }
 
 #define SDL_GetRGB(pixel, format, r, g, b) SDL_GetSurfaceRGB(pixel, format, r, g, b)
@@ -113,9 +115,9 @@ inline Uint32 SDL_MapSurfaceRGBA(SDL_PixelFormat format, Uint8 r, Uint8 g, Uint8
 #define SDL_MapRGBA(format, r, g, b, a) SDL_MapSurfaceRGBA(format, r, g, b, a)
 
 struct SDL_AudioCVT_Compat {
-    Uint8* buf;
-    int len;
-    int len_mult;
+  Uint8* buf;
+  int    len;
+  int    len_mult;
 };
 
 #define SDL_AudioCVT SDL_AudioCVT_Compat
@@ -171,12 +173,12 @@ char*        UTIL_StrGetLine(const char* buf, int width, int& length);
 unsigned int UTIL_GetPixel(SDL_Surface* surface, int x, int y);
 void         UTIL_PutPixel(SDL_Surface* surface, int x, int y, unsigned int pixel);
 int          UTIL_GetPixel(
-             SDL_Surface*   f,
-             int            x,
-             int            y,
-             unsigned char* r,
-             unsigned char* g,
-             unsigned char* b);
+    SDL_Surface*   f,
+    int            x,
+    int            y,
+    unsigned char* r,
+    unsigned char* g,
+    unsigned char* b);
 int UTIL_PutPixel(SDL_Surface* f, int x, int y, unsigned char r, unsigned char g, unsigned char b);
 int UTIL_PutPixelAlpha(
     SDL_Surface*  f,
@@ -193,13 +195,13 @@ SDL_Surface* UTIL_ScaleSurface(SDL_Surface* s, int w, int h);
 int          UTIL_ScaleBlit(SDL_Surface* src, SDL_Rect* sr, SDL_Surface* dst, SDL_Rect* dr);
 void         UTIL_Scale2X(SDL_Surface* src, SDL_Surface* dst);
 void         UTIL_HorzLine(
-            SDL_Surface*  surface,
-            short         x,
-            short         y,
-            short         l,
-            unsigned char r,
-            unsigned char g,
-            unsigned char b);
+    SDL_Surface*  surface,
+    short         x,
+    short         y,
+    short         l,
+    unsigned char r,
+    unsigned char g,
+    unsigned char b);
 void UTIL_VertLine(
     SDL_Surface*  surface,
     short         x,

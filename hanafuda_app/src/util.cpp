@@ -371,9 +371,9 @@ int UTIL_PutPixelAlpha(
     case 3: {
       pixel = *((Uint32*)(bits));
       SDL_GetRGB(pixel, surface->format, &tr, &tg, &tb);
-      tr                                      = (r * (255 - a) + tr * a) >> 8;
-      tg                                      = (g * (255 - a) + tg * a) >> 8;
-      tb                                      = (b * (255 - a) + tb * a) >> 8;
+      tr                                                           = (r * (255 - a) + tr * a) >> 8;
+      tg                                                           = (g * (255 - a) + tg * a) >> 8;
+      tb                                                           = (b * (255 - a) + tb * a) >> 8;
       *((bits) + SDL_GetSurfaceFormatDetails(surface)->Rshift / 8) = tr;
       *((bits) + SDL_GetSurfaceFormatDetails(surface)->Gshift / 8) = tg;
       *((bits) + SDL_GetSurfaceFormatDetails(surface)->Bshift / 8) = tb;
@@ -715,9 +715,9 @@ void UTIL_HorzLine(
       /* Format/endian independent */
       Uint8 nr, ng, nb;
       for (n = 0; n < (unsigned)l; n++) {
-        nr                                      = (pixel >> SDL_GetSurfaceFormatDetails(surface)->Rshift) & 0xFF;
-        ng                                      = (pixel >> SDL_GetSurfaceFormatDetails(surface)->Gshift) & 0xFF;
-        nb                                      = (pixel >> SDL_GetSurfaceFormatDetails(surface)->Bshift) & 0xFF;
+        nr = (pixel >> SDL_GetSurfaceFormatDetails(surface)->Rshift) & 0xFF;
+        ng = (pixel >> SDL_GetSurfaceFormatDetails(surface)->Gshift) & 0xFF;
+        nb = (pixel >> SDL_GetSurfaceFormatDetails(surface)->Bshift) & 0xFF;
         *((bits) + SDL_GetSurfaceFormatDetails(surface)->Rshift / 8) = nr;
         *((bits) + SDL_GetSurfaceFormatDetails(surface)->Gshift / 8) = ng;
         *((bits) + SDL_GetSurfaceFormatDetails(surface)->Bshift / 8) = nb;
@@ -794,9 +794,9 @@ void UTIL_VertLine(
       /* Format/endian independent */
       Uint8 nr, ng, nb;
       for (n = 0; n < (unsigned)l; n++) {
-        nr                                      = (pixel >> SDL_GetSurfaceFormatDetails(surface)->Rshift) & 0xFF;
-        ng                                      = (pixel >> SDL_GetSurfaceFormatDetails(surface)->Gshift) & 0xFF;
-        nb                                      = (pixel >> SDL_GetSurfaceFormatDetails(surface)->Bshift) & 0xFF;
+        nr = (pixel >> SDL_GetSurfaceFormatDetails(surface)->Rshift) & 0xFF;
+        ng = (pixel >> SDL_GetSurfaceFormatDetails(surface)->Gshift) & 0xFF;
+        nb = (pixel >> SDL_GetSurfaceFormatDetails(surface)->Bshift) & 0xFF;
         *((bits) + SDL_GetSurfaceFormatDetails(surface)->Rshift / 8) = nr;
         *((bits) + SDL_GetSurfaceFormatDetails(surface)->Gshift / 8) = ng;
         *((bits) + SDL_GetSurfaceFormatDetails(surface)->Bshift / 8) = nb;
@@ -897,9 +897,9 @@ void UTIL_VertLineShade(
             (r1 * (l - n) + r2 * n) / l,
             (g1 * (l - n) + g2 * n) / l,
             (b1 * (l - n) + b2 * n) / l);
-        nr                                      = (pixel >> SDL_GetSurfaceFormatDetails(surface)->Rshift) & 0xFF;
-        ng                                      = (pixel >> SDL_GetSurfaceFormatDetails(surface)->Gshift) & 0xFF;
-        nb                                      = (pixel >> SDL_GetSurfaceFormatDetails(surface)->Bshift) & 0xFF;
+        nr = (pixel >> SDL_GetSurfaceFormatDetails(surface)->Rshift) & 0xFF;
+        ng = (pixel >> SDL_GetSurfaceFormatDetails(surface)->Gshift) & 0xFF;
+        nb = (pixel >> SDL_GetSurfaceFormatDetails(surface)->Bshift) & 0xFF;
         *((bits) + SDL_GetSurfaceFormatDetails(surface)->Rshift / 8) = nr;
         *((bits) + SDL_GetSurfaceFormatDetails(surface)->Gshift / 8) = ng;
         *((bits) + SDL_GetSurfaceFormatDetails(surface)->Bshift / 8) = nb;
@@ -997,9 +997,9 @@ void UTIL_HorzLineShade(
             (r1 * (l - n) + r2 * n) / l,
             (g1 * (l - n) + g2 * n) / l,
             (b1 * (l - n) + b2 * n) / l);
-        nr                                      = (pixel >> SDL_GetSurfaceFormatDetails(surface)->Rshift) & 0xFF;
-        ng                                      = (pixel >> SDL_GetSurfaceFormatDetails(surface)->Gshift) & 0xFF;
-        nb                                      = (pixel >> SDL_GetSurfaceFormatDetails(surface)->Bshift) & 0xFF;
+        nr = (pixel >> SDL_GetSurfaceFormatDetails(surface)->Rshift) & 0xFF;
+        ng = (pixel >> SDL_GetSurfaceFormatDetails(surface)->Gshift) & 0xFF;
+        nb = (pixel >> SDL_GetSurfaceFormatDetails(surface)->Bshift) & 0xFF;
         *((bits) + SDL_GetSurfaceFormatDetails(surface)->Rshift / 8) = nr;
         *((bits) + SDL_GetSurfaceFormatDetails(surface)->Gshift / 8) = ng;
         *((bits) + SDL_GetSurfaceFormatDetails(surface)->Bshift / 8) = nb;
@@ -1134,9 +1134,9 @@ void UTIL_FillRectAlpha(
         for (cx = w - 1; cx >= 0; cx--) {
           pixel = *((Uint32*)(bits));
           SDL_GetRGB(pixel, surface->format, &tr, &tg, &tb);
-          tr                                      = (r + tr * a) >> 8;
-          tg                                      = (g + tg * a) >> 8;
-          tb                                      = (b + tb * a) >> 8;
+          tr                                                           = (r + tr * a) >> 8;
+          tg                                                           = (g + tg * a) >> 8;
+          tb                                                           = (b + tb * a) >> 8;
           *((bits) + SDL_GetSurfaceFormatDetails(surface)->Rshift / 8) = tr;
           *((bits) + SDL_GetSurfaceFormatDetails(surface)->Gshift / 8) = tg;
           *((bits) + SDL_GetSurfaceFormatDetails(surface)->Bshift / 8) = tb;

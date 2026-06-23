@@ -35,10 +35,10 @@ enum {
   NUM_SOUND,
 };
 
-#include "main.hpp"
 #include <hana/card.hpp>
 
 #include "font.hpp"
+#include "main.hpp"
 
 class CGeneral {
  public:

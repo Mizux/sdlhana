@@ -390,7 +390,7 @@ void CBasePlayer::DrawCurResult() {
       DRAW_BOX_TEXT(                                                                          \
           va("%s [%d %s]",                                                                    \
              msg(#r),                                                                         \
-             m_Result.r* s,                                                                   \
+             m_Result.r * s,                                                                  \
              ((s * m_Result.r <= 1) ? msg("point") : msg("points"))));                        \
       CLEAR_EFFECT;                                                                           \
       DrawCaptured();                                                                         \
@@ -448,22 +448,22 @@ void CBasePlayer::DrawAllResult() {
 
   y += 10;
 
-#define DRAW_RESULT_A(r, s)                                                                   \
-  {                                                                                           \
-    if (m_Result.r > 0) {                                                                     \
-      gpGeneral->DrawText(msg(#r), 30, y, 255, 255, 0, 24);                                   \
-      gpGeneral->DrawText(                                                                    \
-          va("%d %s", s* m_Result.r, ((s * m_Result.r <= 1) ? msg("point") : msg("points"))), \
-          300,                                                                                \
-          y,                                                                                  \
-          255,                                                                                \
-          255,                                                                                \
-          255,                                                                                \
-          24);                                                                                \
-      gpGeneral->PlaySound(SOUND_HINT);                                                       \
-      UTIL_Delay(1000);                                                                       \
-      y += 26;                                                                                \
-    }                                                                                         \
+#define DRAW_RESULT_A(r, s)                                                                    \
+  {                                                                                            \
+    if (m_Result.r > 0) {                                                                      \
+      gpGeneral->DrawText(msg(#r), 30, y, 255, 255, 0, 24);                                    \
+      gpGeneral->DrawText(                                                                     \
+          va("%d %s", s * m_Result.r, ((s * m_Result.r <= 1) ? msg("point") : msg("points"))), \
+          300,                                                                                 \
+          y,                                                                                   \
+          255,                                                                                 \
+          255,                                                                                 \
+          255,                                                                                 \
+          24);                                                                                 \
+      gpGeneral->PlaySound(SOUND_HINT);                                                        \
+      UTIL_Delay(1000);                                                                        \
+      y += 26;                                                                                 \
+    }                                                                                          \
   }
 
   if (gpGame->GetGameMode() == GAMEMODE_KOREAN) {
