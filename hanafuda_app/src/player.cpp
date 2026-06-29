@@ -18,6 +18,8 @@
 
 #include "player.hpp"
 
+#include <type_traits>
+
 #include "game.hpp"
 #include "general.hpp"
 #include "main.hpp"

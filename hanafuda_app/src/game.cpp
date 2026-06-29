@@ -18,9 +18,10 @@
 
 #include "game.hpp"
 
-#include <SDL3/SDL.h>
-
 #include <cstdlib>
+#include <type_traits>
+
+#include <SDL3/SDL.h>
 
 #include "bot.hpp"
 #include "general.hpp"

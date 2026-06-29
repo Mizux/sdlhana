@@ -20,6 +20,8 @@
 
 #include "general.hpp"
 
+#include <type_traits>
+
 #include <SDL3/SDL.h>
 
 #include "main.hpp"
