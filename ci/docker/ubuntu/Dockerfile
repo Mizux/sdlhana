@@ -9,6 +9,11 @@ RUN apt update -q \
  git wget libssl-dev build-essential cmake \
 && apt-get clean \
 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apt-get update -qq \
+&& apt-get install -yq \
+ libsdl3-dev libsdl3-image-dev  \
+&& apt-get clean \
+&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Add the library src to our build env
 FROM env AS devel

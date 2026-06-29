@@ -9,6 +9,9 @@ RUN dnf -y update \
 && dnf -y install @development-tools \
 && dnf -y install gcc-c++ cmake \
 && dnf clean all
+RUN dnf -y update \
+&& dnf -y install SDL3-devel SDL3_image-devel \
+&& dnf clean all
 
 # Add the library src to our build env
 FROM env AS devel

@@ -1,6 +1,6 @@
 # Create a virtual environment with all tools installed
 # ref: https://hub.docker.com/rockylinux/rockylinux
-FROM rockylinux/rockylinux:9 AS env
+FROM rockylinux/rockylinux:10 AS env
 
 # Install system build dependencies
 ENV PATH=/usr/local/bin:$PATH
@@ -10,6 +10,10 @@ RUN dnf -y update \
 && dnf clean all \
 && rm -rf /var/cache/dnf
 CMD [ "/usr/bin/bash" ]
+RUN dnf -y update \
+&& dnf -y install SDL3-devel SDL3-image-devel \
+&& dnf clean all \
+&& rm -rf /var/cache/dnf
 
 # Add the library src to our build env
 FROM env AS devel

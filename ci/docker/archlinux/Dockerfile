@@ -5,6 +5,7 @@ FROM archlinux:latest AS env
 # Install system build dependencies
 ENV PATH=/usr/local/bin:$PATH
 RUN pacman -Syu --noconfirm git base-devel cmake
+RUN pacman -Syu --noconfirm sdl3 sdl3_image
 
 # Add the library src to our build env
 FROM env AS devel

@@ -10,6 +10,7 @@ RUN dnf -y update \
 && dnf clean all \
 && rm -rf /var/cache/dnf
 CMD [ "/usr/bin/bash" ]
+RUN dnf -y install SDL3-devel SDL3-image-devel
 
 # Add the library src to our build env
 FROM env AS devel

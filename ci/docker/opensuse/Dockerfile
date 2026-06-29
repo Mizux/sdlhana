@@ -8,6 +8,9 @@ RUN zypper refresh \
 && zypper install -y git gcc gcc-c++ cmake \
 && zypper clean -a
 ENV CC=gcc CXX=g++
+RUN zypper refresh \
+&& zypper install -y SDL3-devel SDL3_image-devel \
+&& zypper clean -a
 
 # Add the library src to our build env
 FROM env AS devel
