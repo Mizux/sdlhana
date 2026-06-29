@@ -23,13 +23,13 @@ jobs:
       deps_key: amd64_windows_deps_${{matrix.cmake.config}}
       CTEST_OUTPUT_ON_FAILURE: 1
     steps:
-    - uses: actions/checkout@v7
-    - name: Setup SDL3
-      uses: libsdl-org/setup-sdl@main
-      id: sdl
-      with:
-        version: 3-latest
-        version-sdl-image: 3-latest
+      - uses: actions/checkout@v7
+      - name: Setup SDL3
+        uses: libsdl-org/setup-sdl@main
+        id: sdl
+        with:
+          version: 3-latest
+          version-sdl-image: 3-latest
 
       # CONFIGURING CACHES
       - name: Cache CMake dependencies
