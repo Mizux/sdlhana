@@ -24,7 +24,6 @@
 // uncomment the next line to enable hashing
 // #define WITH_HASH 1
 
-#include <malloc.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
