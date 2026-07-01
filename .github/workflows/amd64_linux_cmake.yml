@@ -38,7 +38,7 @@ jobs:
           version: 3-latest
           version-sdl-image: 3-latest
 
-      # CONFIGURING CACHES
+      # Configuring Caches
       - name: Cache CMake dependencies
         uses: actions/cache@v6
         with:
@@ -84,6 +84,8 @@ jobs:
           --config ${{matrix.cmake.config}}
           --target install
           -v
+
+      # Updating Caches
       - name: CCache stats and cleanup
         run: |
           ccache --show-stats

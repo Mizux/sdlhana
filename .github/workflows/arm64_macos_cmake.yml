@@ -35,7 +35,7 @@ jobs:
           brew update
           brew install sdl3 sdl3_image
 
-      # CONFIGURING CACHES
+      # Configuring Caches
       - name: Cache CMake dependencies
         uses: actions/cache@v6
         with:
@@ -81,6 +81,8 @@ jobs:
           --config ${{matrix.cmake.config}}
           --target ${{matrix.cmake.install_target}}
           -v
+
+      # Updating Caches
       - name: CCache stats and cleanup
         run: |
           ccache --show-stats
